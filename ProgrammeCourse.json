@@ -1,0 +1,62 @@
+[
+                {
+                               "Type" : "QUALIF",
+                               "Bloc" : 1,
+                               "Epreuve" : "400",
+                               "Serie" : 1,
+                               "De" : "A",
+                               "A" : "B",
+                               "Trace" : 100,
+                               "NbTour" : 4
+                },
+                {
+                               "Type" : "QUALIF",
+                               "Bloc" : 1,
+                               "Epreuve" : "400",
+                               "Serie" : 2,
+                               "De" : "A",
+                               "A" : "B",
+                               "Trace" : 100,
+                               "NbTour" : 4
+                },
+                {
+                               "Type" : "QUALIF",
+                               "Bloc" : 1,
+                               "Epreuve" : "400",
+                               "Serie" : 3,
+                               "De" : "A",
+                               "A" : "B",
+                               "Trace" : 100,
+                               "NbTour" : 4
+                },
+                     {
+                               "Type" : "FINALE",
+                               "Bloc" : 2,
+                               "Epreuve" : "400",
+                               "Serie" : 4,
+                               "De" : "A",
+                               "A" : "B",
+                               "Trace" : 100,
+                               "NbTour" : 4
+                },
+                {
+                               "Type" : "FINALE",
+                               "Bloc" : 2,
+                               "Epreuve" : "400",
+                               "Serie" : 5,
+                               "De" : "A",
+                               "A" : "B",
+                               "Trace" : 100,
+                               "NbTour" : 4
+                },
+                {
+                               "Type" : "FINALE",
+                               "Bloc" : 2,
+                               "Epreuve" : "400",
+                               "Serie" : 6,
+                               "De" : "A",
+                               "A" : "B",
+                               "Trace" : 100,
+                               "NbTour" : 4
+                }                       
+]

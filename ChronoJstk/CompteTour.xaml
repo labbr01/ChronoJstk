@@ -1,0 +1,24 @@
+﻿<Window x:Class="ChronoJstk.CompteTour"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:zz="clr-namespace:ChronoJstk"
+        Title="CompteTour" Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Viewbox Grid.Row="0" Grid.Column="0" Stretch="Uniform">
+            <TextBlock x:Name="ZoneText" Text="{Binding NbTour}" Margin="-1,-4,0,-2" >
+                <TextBlock.Background>
+                    <ImageBrush ImageSource="/ChronoJstk;component/Images/FinCourse.jpg" Opacity="0.85" Stretch="Uniform"  />
+                </TextBlock.Background>
+            </TextBlock>
+            <!--<Label x:Name="labela"></Label>-->
+            <!--<zz:TextBlockAutoShrink x:Name="tbTest" FontSize="250" Height="250" Width="250" Background="Yellow" Text="{Binding NbTour}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
+        </Viewbox>
+       
+    </Grid>
+</Window>

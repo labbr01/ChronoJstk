@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        .NonVisible {
+            visibility: collapse
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+    <title>Chrono web</title>
+    <script type="text/javascript" src="Scripts/jquery-2.0.2.js"></script>
+    <script type="text/javascript">
+        if (!Array.prototype.remove) {
+            Array.prototype.remove = function (val) {
+                var i = this.indexOf(val);
+                return i > -1 ? this.splice(i, 1) : [];
+            };
+        }
+
+        var ws;
+        $().ready(function () {
+            var c = "ws://localhost:62751/WSHandler.ashx";
+            ws = new WebSocket(c);
+            ws.onopen = function () {
+                $("#spanStatus").text("Connecté");
+            };
+            ws.onmessage = function (evt) {
+                var data = JSON.parse(evt.data);
+                if (data.TypeMessage = "Patineur") {
+                    $("#Nom" + data.Casque).text(data.Nom);
+                    $("#Club" + data.Casque).text(data.Club);
+                    $("#Tour" + data.Casque).text(data.Tour);
+                    $("#Temps" + data.Casque).text(data.Temps);
+                }
+                else if (data.TypeMessage == "Etat") {
+                }
+                };
+            //$("#btnConnect").click(function () {
+            //    $("#spanStatus").text("connecting");
+            //    var c = "ws://localhost:61195/WSHandler.ashx";
+            //    //ws = new WebSocket("ws://" + window.location.hostname +
+            //    //    "/WSHandler.ashx");
+            //    ws = new WebSocket(c);
+            //    ws.onopen = function () {
+            //        $("#spanStatus").text("connected");
+            //    };
+            //    ws.onmessage = function (evt) {
+            //        $("#spanStatus").text(evt.data);
+            //    };
+            //    ws.onerror = function (evt) {
+            //        $("#spanStatus").text(evt.message);
+            //    };
+            //    ws.onclose = function () {
+            //        $("#spanStatus").text("disconnected");
+            //    };
+            //});
+            //$("#btnSend").click(function () {
+            //    if (ws.readyState == WebSocket.OPEN) {
+            //        ws.send($("#textInput").val());
+            //    }
+            //    else {
+            //        $("#spanStatus").text("Connection is closed");
+            //    }
+            //});
+            //$("#btnDisconnect").click(function () {
+            //    ws.close();
+            //});
+        });
+
+    </script>
+</head>
+<body>
+    <input type="button" value="Connect" id="btnConnect" />
+    <input type="button" value="Disconnect" id="btnDisconnect" /><br />
+    <input type="text" id="textInput" />
+    <input type="button" value="Send" id="btnSend" /><br />
+    <span id="spanStatus">(display)</span><br />
+    <table>
+        <tr>
+            <th>Casque</th>
+            <th>Nom</th>
+            <th>Club</th>
+            <th>Tour</th>
+            <th>Temps</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td id="Nom1"></td>
+            <td id="Club1"></td>
+            <td id="Tour1"></td>
+            <td id="Temps1"></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td id="Nom2"></td>
+            <td id="Club2"></td>
+            <td id="Tour2"></td>
+            <td id="Temps2"></td>
+        </tr>
+
+        <tr>
+            <td>3</td>
+            <td id="Nom3"></td>
+            <td id="Club3"></td>
+            <td id="Tour3"></td>
+            <td id="Temps3"></td>
+        </tr>
+
+        <tr>
+            <td>4</td>
+            <td id="Nom4"></td>
+            <td id="Club4"></td>
+            <td id="Tour4"></td>
+            <td id="Temps4"></td>
+        </tr>
+
+        <tr>
+            <td>5</td>
+            <td id="Nom5"></td>
+            <td id="Club5"></td>
+            <td id="Tour5"></td>
+            <td id="Temps5"></td>
+        </tr>
+
+        <tr>
+            <td>6</td>
+            <td id="Nom6"></td>
+            <td id="Club6"></td>
+            <td id="Tour6"></td>
+            <td id="Temps6"></td>
+        </tr>
+        <tr class="NonVisible">
+            <td>7</td>
+            <td id="Nom7"></td>
+            <td id="Club7"></td>
+            <td id="Tour7"></td>
+            <td id="Temps7"></td>
+        </tr>
+        <tr class="NonVisible">
+            <td>8</td>
+            <td id="Nom8"></td>
+            <td id="Club8"></td>
+            <td id="Tour8"></td>
+            <td id="Temps8"></td>
+        </tr>
+
+    </table>
+</body>
+</html>

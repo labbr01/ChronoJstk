@@ -1,0 +1,99 @@
+﻿<Window x:Name="window" x:Class="ChronoJstk.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+        xmlns:xxx="clr-namespace:ChronoJstk"
+        Title="{Binding TitreFenetre, Mode=TwoWay}" Height="800" Width="900"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="700"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Menu IsMainMenu="True" VerticalAlignment="Top" >
+            <MenuItem Header="_Fichier">
+                <MenuItem Header="_Programme course" Click="OuvrirProgramme_Click"></MenuItem>
+                <MenuItem Header="_Consulter / Éditer résultat" Click="OuvrirResultat_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Options">
+                <MenuItem Header="_Compte tour" Click="CompteTour_Click"></MenuItem>
+                <MenuItem Header="_WebDiffusion" Click="DiffusionWeb_Click"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0">Bloc</TextBlock>
+            <TextBlock Grid.Column="1">Série</TextBlock>
+            <TextBlock Grid.Column="2">Vague</TextBlock>
+            <TextBlock Grid.Column="3">Tracé</TextBlock>
+            <TextBlock Grid.Column="4">Nb Tour</TextBlock>
+            <TextBlock Grid.Column="5">Type</TextBlock>
+
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="85"/>
+                <ColumnDefinition Width="85"/>
+
+
+            </Grid.ColumnDefinitions>
+            <ComboBox Grid.Column="0" x:Name="bloc"  IsEnabled="{Binding blocIsEnabled, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" ItemsSource="{Binding blocs, Mode=TwoWay}" SelectedItem="{Binding blocSel, Mode=TwoWay}"  />
+            <ComboBox Grid.Column="1" x:Name="serie" IsEnabled="{Binding serieIsEnabled, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" ItemsSource="{Binding series, Mode=TwoWay}" SelectedItem="{Binding serieSel, Mode=TwoWay}" />
+            <ComboBox Grid.Column="2" x:Name="vague" IsEnabled="{Binding vagueIsEnabled, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" ItemsSource="{Binding vagues, Mode=TwoWay}" SelectedItem="{Binding vagueSel, Mode=TwoWay}" />
+            <TextBlock Grid.Column="3" x:Name="trace" Text="{Binding traceTxt, Mode=TwoWay}" />
+            <TextBlock Grid.Column="4" x:Name="nbTour" Text="{Binding nbTourTxt,Mode=TwoWay}"  />
+            <TextBlock Grid.Column="5" x:Name="type" Text="{Binding typeTxt, Mode=TwoWay}"  />
+            <StackPanel Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="Joindre" Click="Joindre_Click" Visibility="{Binding JoindreVisibility, Mode=TwoWay}">Joindre</Button>
+                <Button x:Name="Interrompre" Click="Interrompre_Click" Visibility="{Binding InterrompreVisibility, Mode=TwoWay}">Reprendre Départ</Button>
+                <Button x:Name="Sauvegarde" Click="Sauvegarde_Click" Visibility="{Binding SauvegardeVisibility, Mode=TwoWay}">Sauvegarde</Button>
+            </StackPanel>
+            <Button Grid.Column="7" x:Name="departManuel" Content="Départ manuel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Click="departManuel_Click"/>
+            <Button Grid.Column="8" x:Name="finCourse" Content="Fin de course" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Click="finCourse_Click"/>
+        </Grid>
+        <Grid Grid.Row="3" x:Name="grdEtat">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0">État :</Label>
+            <Label Grid.Column="1" x:Name="lblEtat" Content="{Binding lblEtatTxt, Mode=TwoWay}" Background="{Binding lblEtatBackground, Mode=OneWay}"></Label>
+            <Label Grid.Column="2">Départ :</Label>
+            <Label Grid.Column="3" x:Name="lblDepart" Content="{Binding lblDepartTxt, Mode=TwoWay}" ></Label>
+            <Label Grid.Column="4">Chrono :</Label>
+            <Label Grid.Column="5" x:Name="lblChrono" Content="{Binding lblChronoTxt, Mode=TwoWay}"></Label>
+            <Label Grid.Column="6">Fin :</Label>
+            <Label Grid.Column="7" x:Name="lblFin" Content="{Binding lblFinTxt, Mode=TwoWay}"></Label>
+
+        </Grid>
+        <StackPanel  Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Left" x:Name="SpEvenements">                                    
+            <xxx:InfoCourseTitre></xxx:InfoCourseTitre>
+        </StackPanel>
+    </Grid>
+</Window>

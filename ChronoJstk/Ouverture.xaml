@@ -1,0 +1,117 @@
+﻿<Window x:Class="ChronoJstk.Ouverture"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChronoJstk"
+        mc:Ignorable="d"
+        Title="Ouverture" Height="400" Width="650">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="175"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+                <ColumnDefinition Width="150"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="125"></ColumnDefinition>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="1">Fichier PAT</Label>
+            <TextBlock Grid.Row="0" Grid.Column="2" x:Name="FichierPat"></TextBlock>
+            <Button Grid.Row="0" Grid.Column="3" x:Name="btnFichierPat" Click="btnFichierPat_Click">Selectionner</Button>
+            <Label Grid.Row="1" Grid.Column="1">Compétition</Label>
+            <ComboBox Grid.Row="1" Grid.Column="2" x:Name="cbxCompetition" SelectionChanged="cbxCompetition_SelectionChanged"></ComboBox>
+            <Label Grid.Row="2" Grid.Column="1">Groupes Mixtes</Label>
+            <ComboBox x:Name="cbxGroupesMixtes" Grid.Row="2" Grid.Column="2" SelectionChanged="cbxGroupesMixtes_SelectionChanged">
+                <ComboBoxItem>Non</ComboBoxItem>
+                <ComboBoxItem>Oui</ComboBoxItem>
+            </ComboBox>
+            <Label Grid.Row="3" Grid.Column="1">Répertoire .cl</Label>
+            <TextBlock Grid.Row="3" Grid.Column="2" x:Name="RepCL"></TextBlock>
+            <Button Grid.Row="3" Grid.Column="3" x:Name="btnRepCL" Click="btnRepCL_Click">Répertoire</Button>
+            <Label Grid.Row="4" Grid.Column="1">Répertoire Log</Label>
+            <Button Grid.Row="4" Grid.Column="3" x:Name="btnRepLog" Click="btnRepLog_Click">Répertoire</Button>
+            <TextBlock Grid.Row="4" Grid.Column="2" x:Name="RepLog"></TextBlock>
+            <!--<Label Grid.Row="4" Grid.Column="1">Url site web</Label>
+            <TextBox Grid.Row="4" Grid.Column="2" x:Name="UrlWeb" TextChanged="UrlWeb_TextChanged"></TextBox>-->
+            <Label Grid.Row="5" Grid.Column="1">Diffusion Web chrono</Label>
+            <ComboBox x:Name="cbxWebChrono" Grid.Row="5" Grid.Column="2" SelectionChanged="cbxWebChrono_SelectionChanged">
+                <ComboBoxItem>Non</ComboBoxItem>
+                <ComboBoxItem>Oui</ComboBoxItem>
+            </ComboBox>
+            <Label Grid.Row="6" Grid.Column="1">Diffusion Web résultat</Label>
+            <ComboBox x:Name="cbxWebResultat" Grid.Row="6" Grid.Column="2" SelectionChanged="cbxWebResultat_SelectionChanged">
+                <ComboBoxItem>Non</ComboBoxItem>
+                <ComboBoxItem>Oui</ComboBoxItem>
+            </ComboBox>
+            <Label Grid.Row="8" Grid.Column="1">Compte Tour</Label>
+        </Grid>
+        <Label Grid.Row="1">Configuration avancées</Label>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>                
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="1">Url diffusion</Label>
+            <TextBox Grid.Row="0" Grid.Column="2" x:Name="UrlWeb" TextChanged="UrlWeb_TextChanged"></TextBox>
+            <Label Grid.Row="0" Grid.Column="3" Content="SignalR Server"/>
+            <TextBox Grid.Row="0" Grid.Column="4" x:Name="SignalRServer" TextChanged="UrlHub_TextChanged"></TextBox>
+            <Label Grid.Row="1" Grid.Column="1">Usager FTP</Label>
+            <TextBox Grid.Row="1" Grid.Column="2" x:Name="UsagerFtp" TextChanged="UsagerFtp_TextChanged"></TextBox>
+            <Label Grid.Row="1" Grid.Column="3">Mot Passe</Label>
+            <PasswordBox Grid.Row="1" Grid.Column="4" x:Name="MotPasse" PasswordChanged="MotPasse_PasswordChanged"></PasswordBox>
+            <Label Grid.Row="2" Grid.Column="1">Port config.</Label>
+            <TextBox Grid.Row="2" Grid.Column="2" x:Name="PortConfig" TextChanged="PortConfig_TextChanged"></TextBox>
+            <Label Grid.Row="2" Grid.Column="3">Host config.</Label>
+            <TextBox Grid.Row="2" Grid.Column="4" x:Name="HostConfig" TextChanged="HostConfig_TextChanged"></TextBox>
+            <Label Grid.Row="3" Grid.Column="1">Port input</Label>
+            <TextBox Grid.Row="3" Grid.Column="2" x:Name="PortInput" TextChanged="PortInput_TextChanged"></TextBox>
+            <Label Grid.Row="3" Grid.Column="3">SignalR Hub</Label>
+            <TextBox Grid.Row="3" Grid.Column="4" x:Name="SignalRHub" TextChanged="SignalRHub_TextChanged"></TextBox>
+
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+                <ColumnDefinition Width="150"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="125"></ColumnDefinition>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label  Grid.Column="1">Exécutable Input</Label>
+            <TextBlock  Grid.Column="2" x:Name="ChronistickInput"></TextBlock>
+            <Button Grid.Column="3" x:Name="btnChronistickInput" Click="btnChronistickInput_Click">Selectionner</Button>
+        </Grid>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" >
+            <Button x:Name="OK" Click="OK_Click">OK</Button>
+            <Button x:Name="Cancel" Click="Cancel_Click">Annuler</Button>
+        </StackPanel>
+    </Grid>
+</Window>

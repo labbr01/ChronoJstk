@@ -1,0 +1,87 @@
+﻿<Window x:Class="ChronoStick_Input.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+        xmlns:p="clr-namespace:ChronoStick_Input.Properties"
+        xmlns:z="clr-namespace:ChronoStick_Input.Workarounds"
+        Title="{Binding TitreFenetre}" Height="500" Width="525">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="120"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="{x:Static p:Resources.Header}" />
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="10"></ColumnDefinition>
+                <ColumnDefinition Width="140"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static p:Resources.Etat}"></TextBlock>
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" >
+                <TextBlock x:Name="txtEtat" Text="{Binding TexteEtat}" Background="{Binding CouleurEtat}"></TextBlock>
+                <Button x:Name="Reconnecter" Visibility="{Binding ConnectVisible}" Click="Reconnecter_Click" Content="{x:Static p:Resources.Reconnecter}"></Button>
+            </StackPanel>
+            <TextBlock Grid.Row="0" Grid.Column="3" Text="{x:Static p:Resources.Depart}"></TextBlock>
+            <Button x:Name="Depart" Grid.Row="0" Grid.Column="4" Click="Depart_Click" Content="{x:Static p:Resources.DepartMsg}"></Button>
+            <TextBlock  Grid.Row="1" Grid.Column="0" Text="{x:Static p:Resources.PortUDP}"></TextBlock>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NoPort}"></TextBox>
+            <TextBlock  Grid.Row="1" Grid.Column="3" Text="{x:Static p:Resources.HostUDP}"></TextBlock>
+            <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding HostMessages}"></TextBox>
+
+            <TextBlock  Grid.Row="2" Grid.Column="0" Text="{x:Static p:Resources.PortUDPCfg}"></TextBlock>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding NoPortConfig}"></TextBox>
+            <TextBlock  Grid.Row="3" Grid.Column="0" Text="{x:Static p:Resources.Delais}"></TextBlock>
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Delais}"></TextBox>
+            <TextBlock  Grid.Row="3" Grid.Column="3" Text="{x:Static p:Resources.NbPatDep}"></TextBlock>
+            <TextBox Grid.Row="3" Grid.Column="4" Text="{Binding NbPatineurDep}"></TextBox>
+            <TextBlock  Grid.Row="4" Grid.Column="0" Text="{x:Static p:Resources.NbSecMinTour}"></TextBlock>
+            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding NbSecTourMin}"></TextBox>
+            <TextBlock  Grid.Row="4" Grid.Column="3" Text="{x:Static p:Resources.NbSecMinDep}" ></TextBlock>
+            <TextBox Grid.Row="4" Grid.Column="4" Text="{Binding NbSecDepMin}"></TextBox>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static p:Resources.SimulTour}" HorizontalAlignment="Center"  TextWrapping="Wrap"/>
+            <Grid Grid.Row="0" Grid.Column="1"  HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"></ColumnDefinition>
+                    <ColumnDefinition Width="80"></ColumnDefinition>
+                    <ColumnDefinition Width="80"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" x:Name="b1" Click="b1_Click">1</Button>
+                <Button Grid.Row="0" Grid.Column="1" x:Name="b2" Click="b1_Click">2</Button>
+                <Button Grid.Row="0" Grid.Column="2" x:Name="b3" Click="b1_Click">3</Button>
+                <Button Grid.Row="1" Grid.Column="0" x:Name="b4" Click="b1_Click">4</Button>
+                <Button Grid.Row="1" Grid.Column="1" x:Name="b5" Click="b1_Click">5</Button>
+                <Button Grid.Row="1" Grid.Column="2" x:Name="b6" Click="b1_Click">6</Button>
+                <Button Grid.Row="2" Grid.Column="0" x:Name="b7" Click="b1_Click">7</Button>
+                <Button Grid.Row="2" Grid.Column="1" x:Name="b8" Click="b1_Click">8</Button>
+                <Button Grid.Row="2" Grid.Column="2" x:Name="b9" Click="b1_Click">9</Button>
+                <Button Grid.Row="3" Grid.Column="0" x:Name="b10" Click="b1_Click">10</Button>
+                <Button Grid.Row="3" Grid.Column="1" x:Name="b11" Click="b1_Click">11</Button>
+                <Button Grid.Row="3" Grid.Column="2" x:Name="b12" Click="b1_Click">12</Button>
+            </Grid>
+        </Grid>
+        <ListBox Grid.Row="3" ItemsSource="{Binding Journal}" z:ListBox.AutoScroll="True"  ></ListBox>
+    </Grid>
+</Window>

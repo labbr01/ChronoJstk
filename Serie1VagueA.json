@@ -1,0 +1,72 @@
+﻿[
+            {
+                        "Epreuve ": 400,
+                        "Groupe": "Groupe 1  féminin",
+                        "Etape ": "Qualification, 1 + 2",
+                        "Vague": "1A",
+                        "Casque": 1,
+                        "Patineurs": "53 GILBERT, Sarah",
+                        "Club": "Nouveau-Brunswick",
+                        "Rang": 0,
+                        "Temps": "",
+                        "Points":  0,
+                        "Commentaire" :  "",
+                        "Date": "6/15/2017   5:49:59 AM"
+            },
+              {
+                        "Epreuve ": 400,
+                        "Groupe": "Groupe 1  féminin",
+                        "Etape ": "Qualification, 1 + 2",
+                        "Vague": "1A",
+                        "Casque": 2,
+                        "Patineurs": "64 ST-GELAIS, Manon",
+                        "Club": "Lévis",
+                        "Rang": 0,
+                        "Temps": "",
+                        "Points":  0,
+                        "Commentaire" :  "",
+                        "Date": "6/15/2017   5:49:59 AM"
+            },
+              {
+                        "Epreuve ": 400,
+                        "Groupe": "Groupe 1  féminin",
+                        "Etape ": "Qualification, 1 + 2",
+                        "Vague": "1A",
+                        "Casque": 3,
+                        "Patineurs": "53 PLOURDE, Florance",
+                        "Club": "Québec",
+                        "Rang": 0,
+                        "Temps": "",
+                        "Points":  0,
+                        "Commentaire" :  "",
+                        "Date": "6/15/2017   5:49:59 AM"
+            }, 
+              {
+                        "Epreuve ": 400,
+                        "Groupe": "Groupe 1  féminin",
+                        "Etape ": "Qualification, 1 + 2",
+                        "Vague": "1A",
+                        "Casque": 4,
+                        "Patineurs": "53 GILBERT, Sarah",
+                        "Club": "Nouveau-Brunswick",
+                        "Rang": 0,
+                        "Temps": "",
+                        "Points":  0,
+                        "Commentaire" :  "",
+                        "Date": "6/15/2017   5:49:59 AM"
+            },
+              {
+                        "Epreuve ": 400,
+                        "Groupe": "Groupe 1  féminin",
+                        "Etape ": "Qualification, 1 + 2",
+                        "Vague": "1A",
+                        "Casque": 5,
+                        "Patineurs": "53 LABRECQUE, Aurélie",
+                        "Club": "Portneuf",
+                        "Rang": 0,
+                        "Temps": "",
+                        "Points":  0,
+                        "Commentaire" :  "",
+                        "Date": "6/15/2017   5:49:59 AM"
+            }              
+]

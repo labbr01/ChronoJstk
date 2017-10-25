@@ -1,0 +1,47 @@
+﻿<Window x:Class="ChronoJstk.JoindreSerieVague"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChronoJstk"
+        mc:Ignorable="d"
+        Title="Joindre une série vague" Height="200" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" ></RowDefinition>
+            <RowDefinition Height="25" ></RowDefinition>
+            <RowDefinition Height="25" ></RowDefinition>
+            <RowDefinition Height="25" ></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Grid.Column="1">Série</Label>
+        <Label Grid.Row="0" Grid.Column="2">Vague</Label>
+        <Label Grid.Row="1" Grid.Column="0">Actuel</Label>
+        <TextBlock x:Name="SerieActuel" Grid.Row="1" Grid.Column="1" Text="{Binding serieSel, Mode=TwoWay}"></TextBlock>
+        <TextBlock x:Name="VagueActuel" Grid.Row="1" Grid.Column="2"  Text="{Binding vagueSel, Mode=TwoWay}"></TextBlock>
+        <Label Grid.Row="2" Grid.Column="0">Ajout</Label>
+        <ComboBox Grid.Column="1" Grid.Row="1" x:Name="serie1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" ItemsSource="{Binding series, Mode=TwoWay}" SelectedItem="{Binding serieSel,  Mode=TwoWay}" />
+        <ComboBox Grid.Column="2" Grid.Row="1" x:Name="vague1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" ItemsSource="{Binding vagues,  Mode=TwoWay}" SelectedItem="{Binding vagueSel,  Mode=TwoWay}" />
+        <Label Grid.Row="2" Grid.Column="0">Ajout</Label>
+        <ComboBox Grid.Column="1" Grid.Row="2" x:Name="serie2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" ItemsSource="{Binding series,  Mode=TwoWay}" SelectedItem="{Binding serieSel1, Mode=TwoWay}" />
+        <ComboBox Grid.Column="2" Grid.Row="2" x:Name="vague2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" ItemsSource="{Binding vagues1,  Mode=TwoWay}" SelectedItem="{Binding vagueSel1,  Mode=TwoWay}" />
+        <ComboBox Grid.Column="1" Grid.Row="3" x:Name="serie3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" ItemsSource="{Binding series,  Mode=TwoWay}" SelectedItem="{Binding serieSel2,  Mode=TwoWay}" />
+        <ComboBox Grid.Column="2" Grid.Row="3" x:Name="vague3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" ItemsSource="{Binding vagues2,  Mode=TwoWay}" SelectedItem="{Binding vagueSel2, Mode=TwoWay}" />
+        </Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2">
+            <Button x:Name="OK" Click="OK_Click">OK</Button>
+            <Button x:Name="Cancel" Click="Cancel_Click">Cancel</Button>
+        </StackPanel>
+    </Grid>
+</Window>

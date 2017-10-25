@@ -1,0 +1,445 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style>
+#div-1a {
+ float:left;
+ width:150px;
+}
+#div-1b {
+ float:left;
+ width:150px;
+}
+        /*#Bloc {
+            float: left;
+            width: 150px;
+        }
+        #Serie {
+            float: left;
+            width: 150px;
+        }
+        #Vague {
+            float: left;
+            width: 150px;
+        }
+        #Trace {
+            float: left;
+            width: 150px;
+        }
+        #NbTour {
+            float: left;
+            width: 150px;
+        }*/
+        /*#TypeCourse {
+            float: left;
+            width: 150px;
+        }
+
+        #EtatCourse {
+            float: left;
+            width: 150px;
+        }
+
+        #DepartCourse {
+            float: left;
+            width: 150px;
+        }
+
+        #FinCourse {
+            float: left;
+            width: 150px;
+        }*/
+
+
+        .NonVisible {
+            visibility: collapse
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+    <meta charset="utf-8" />
+    <title>Temps des chronos de la compétition</title>
+    <script src="Scripts/jquery-1.6.4.min.js"></script>
+    <script src="Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="signalr/hubs"></script>
+    <script type="text/javascript">
+         if (!Array.prototype.remove) {
+             Array.prototype.remove = function (val) {
+                 var i = this.indexOf(val);
+                 return i > -1 ? this.splice(i, 1) : [];
+             };
+        }   
+    </script>
+
+    <script>
+var centi=0 // initialise les dixtièmes
+var secon=0 //initialise les secondes
+        var minu = 0 //initialise les minutes
+
+
+function chrono(){
+centi++; //incrémentation des dixièmes de 1
+if (centi>9){centi=0;secon++} //si les dixièmes > 9,on les réinitialise à 0 et on incrémente les secondes de 1
+        if (secon > 59) { secon = 0; minu++ } //si les secondes > 59,on les réinitialise à 0 et on incrémente les minutes de 1
+        //document.P1.contentBox1.Temps.secc.text = " " + centi;
+        var a = document.getElementById("seca");
+        var b = document.getElementById("secb");
+        var c = document.getElementById("secc");
+        c.innerText = " " + centi;
+        a.innerText = " " + secon;
+        b.innerText = " " + minu;
+//document.forsec.secc.value=" "+centi //on affiche les dixièmes
+//document.forsec.seca.value=" "+secon //on affiche les secondes
+//document.forsec.secb.value=" "+minu //on affiche les minutes
+compte=setTimeout('chrono()',100) //la fonction est relancée tous les 10° de secondes
+}
+
+function rasee(){ //fonction qui remet les compteurs à 0
+        try {
+clearTimeout(compte) //arrête la fonction chrono()
+        }
+        catch  (e) 
+        {
+        // au départ initial la valeur n'est pas assignée
+        }
+centi=0;
+secon=0;
+        minu = 0;
+        var a = document.getElementById("seca");
+        var b = document.getElementById("secb");
+        var c = document.getElementById("secc");
+        c.innerText = " " + centi;
+        a.innerText = " " + secon;
+        b.innerText = " " + minu;
+        //$("#secc").innerText = " " + centi;
+        //$("#seca").innerText = " " + secon;
+        //$("#secb").innerText = " " + minu;
+//document.forsec.secc.value=" "+centi
+//document.forsec.seca.value=" "+secon
+//document.forsec.secb.value=" "+minu
+}
+
+    </script>
+
+
+</head >
+             <body>
+                 <!-- of course, you should move the inline CSS style to your stylesheet -->
+                 <!-- main container, width = 70% of page, centered -->
+                 <p>
+                     <div id="contentBox" style="margin:0px auto; width:100%">
+                         <!-- columns divs, float left, no margin so there is no space between column, width=1/3 -->
+                         <div id="column1" style="float:left; margin:0; width:20%;">
+                             <b>Bloc</b>
+                         </div>
+                         <div id="column2" style="float:left; margin:0;width:20%;">
+                             <b>Serie</b>
+                         </div>
+                         <div id="column3" style="float:left; margin:0;width:20%">
+                             <b>Vague</b>
+                         </div>
+                         <div id="column4" style="float:left; margin:0;width:20%">
+                             <b>Tracé</b>
+                         </div>
+                         <div id="column5" style="float:left; margin:0;width:20%">
+                             <b>Nombre de tour</b>
+                         </div>
+                     </div>
+                     <div id="contentBox" style="margin:0px auto; width:100%">
+
+                         <!-- columns divs, float left, no margin so there is no space between column, width=1/3 -->
+                         <div id="Bloc" style="float:left; margin:0; width:20%;"></div>
+                         <div id="Serie" style="float:left; margin:0;width:20%;"></div>
+                         <div id="Vague" style="float:left; margin:0;width:20%"></div>
+                         <div id="Trace" style="float:left; margin:0;width:20%"></div>
+                         <div id="NbTour" style="float:left; margin:0;width:20%"></div>
+                     </div>
+                 </p>
+                     <!--<div>
+                         <div id="div-1a">Bloc</div>
+                         <div id="Bloc"></div>
+                     </div>
+                     <div>
+                         <div id="div-1a">Serie</div>
+                         <div id="Serie"></div>
+                     </div>
+                     <div>
+                         <div id="div-1a">Vague</div>
+                         <div id="Vague"></div>
+                     </div>
+                     <div>
+                         <div id="div-1a">Tracé</div>
+                         <div id="Trace"></div>
+                     </div>
+                     <div>
+                         <div id="div-1a">Nombre de tour</div>
+                         <div id="NbTour"></div>
+                     </div>-->
+                 <p id ="P1" name="P1">
+                     <div id="contentBox" style="margin:0px auto; width:100%">
+                         <!-- columns divs, float left, no margin so there is no space between column, width=1/3 -->
+                         <div id="column1" style="float:left; margin:0; width:20%;">
+                             <b>Type</b>
+                         </div>
+                         <div id="column2" style="float:left; margin:0;width:20%;">
+                             <b>Etat</b>
+                         </div>
+                         <div id="column3" style="float:left; margin:0;width:20%">
+                             <b>Départ course</b>
+                         </div>
+                         <div id="column4" style="float:left; margin:0;width:20%">
+                             <b>FinCourse</b>
+                         </div>
+                         <div id="column5" style="float:left; margin:0;width:20%">
+                             <b>Chrono</b>
+                         </div>
+                     </div>
+                     <div id="contentBox1" style="margin:0px auto; width:100%">
+
+                         <!-- columns divs, float left, no margin so there is no space between column, width=1/3 -->
+                         <div id="TypeCourse" style="float:left; margin:0; width:20%;"></div>
+                         <div id="EtatCourse" style="float:left; margin:0;width:20%;"></div>
+                         <div id="DepartCourse" style="float:left; margin:0;width:20%"></div>
+                         <div id="FinCourse" style="float:left; margin:0;width:20%"></div>                        
+                     </div>
+                     <div id="forsec" name="forsec" style="float:left; margin:0;width:20%">
+                         <div size="3" id="secb" style="float:left; margin:0;width:30%"></div>
+                         <div size="3" id="secb" style="float:left; margin:0;width:5%">m</div>
+                         <div size="3" id="seca" style="float:left; margin:0;width:30%"></div>
+                         <div size="3" id="secb" style="float:left; margin:0;width:5%">s</div>
+                         <div  size="3" id="secc" style="float:left; margin:0;width:30%"></div>
+                     </div>
+
+                 </p>
+                     <!--<div>
+                         <div id="div-1a">Type</div>
+                         <div id="TypeCourse"></div>
+                     </div>
+             
+                     <div>
+                         <div id="div-1a">État</div>
+                         <div id="EtatCourse"></div>
+                     </div>
+                     <div>
+                         <div id="div-1a">Départ course</div>
+                         <div id="DepartCourse"></div>
+                     </div>
+                     <div>
+                         <div id="div-1a">Fin course</div>
+                         <div id="FinCourse"></div>
+                     </div>-->
+                     <!--<form name="forsec">
+                         <input type="text" size="3" name="secb"> min.
+                         <input type="text" size="3" name="seca"> sec.
+                         <input type="text" size="3" name="secc"> dixièmes
+                         <!--<input type="button" value="Chrono" onclick="chrono()">-->
+                         <!--<input type="button" value="RaZ" onclick="rasee()">-->
+                         <!--<input type="button" value="Tempo" onclick="clearTimeout(compte)">-->
+                         <!--//arrête temporairement la fonction chrono()-->
+                     <!--</form>-->
+                 <p>
+                     <div id="Etat" style="width:100%"></div>
+                     <p>
+                         Les temps affichés par le chrono ne sont pas officiels.
+                     </p>
+                     <p>
+                         Les postions d'arrivées doivent être confirmées par le juge de position.
+                     </p>
+                     <p>
+                         Les notes et sanctions de l'officiel peuvent avoir un impact sur le résultat affiché.
+                     </p>
+                 </p>
+                     <table>
+                         <tr>
+                             <th>Casque</th>
+                             <th>Nom</th>
+                             <th>Club</th>
+                             <th>Tour</th>
+                             <th>Dernier tour</th>
+                             <th>Temps</th>
+                         </tr>
+                         <tr>
+                             <td>1</td>
+                             <td id="Nom1"></td>
+                             <td id="Club1"></td>
+                             <td id="Tour1"></td>
+                             <td id="DernierTour1"></td>
+                             <td id="Temps1"></td>
+                         </tr>
+                         <tr>
+                             <td>2</td>
+                             <td id="Nom2"></td>
+                             <td id="Club2"></td>
+                             <td id="Tour2"></td>
+                             <td id="DernierTour2"></td>
+                             <td id="Temps2"></td>
+                         </tr>
+
+                         <tr>
+                             <td>3</td>
+                             <td id="Nom3"></td>
+                             <td id="Club3"></td>
+                             <td id="Tour3"></td>
+                             <td id="DernierTour3"></td>
+                             <td id="Temps3"></td>
+                         </tr>
+
+                         <tr>
+                             <td>4</td>
+                             <td id="Nom4"></td>
+                             <td id="Club4"></td>
+                             <td id="Tour4"></td>
+                             <td id="DernierTour4"></td>
+                             <td id="Temps4"></td>
+                         </tr>
+
+                         <tr>
+                             <td>5</td>
+                             <td id="Nom5"></td>
+                             <td id="Club5"></td>
+                             <td id="Tour5"></td>
+                             <td id="DernierTour5"></td>
+                             <td id="Temps5"></td>
+                         </tr>
+
+                         <tr>
+                             <td>6</td>
+                             <td id="Nom6"></td>
+                             <td id="Club6"></td>
+                             <td id="Tour6"></td>
+                             <td id="DernierTour6"></td>
+                             <td id="Temps6"></td>
+                         </tr>
+                         <tr class="NonVisible">
+                             <td>7</td>
+                             <td id="Nom7"></td>
+                             <td id="Club7"></td>
+                             <td id="DernierTour7"></td>
+                             <td id="Tour7"></td>
+
+                             <td id="Temps7"></td>
+                         </tr>
+                         <tr class="NonVisible">
+                             <td>8</td>
+                             <td id="Nom8"></td>
+                             <td id="Club8"></td>
+                             <td id="Tour8"></td>
+                             <td id="DernierTour8"></td>
+                             <td id="Temps8"></td>
+                         </tr>
+                     </table>
+
+                     <script type="text/javascript">
+                         $(function () {
+                             //Déclaration de notre proxy ChatHub
+                             var chatChronoHub = $.connection.chatChronoHub;
+                             //La méthode displayMessage est appelée depuis le serveur lorsqu'un utilisateur a cliqué sur "Envoyer"
+                             chatChronoHub.client.displayMessage = function (message) {
+                                 //$("#messages").append("<li>" + message + "</li>");
+                                 var data = JSON.parse(message);
+                                 if (data.TypeMessage == "Patineur") {
+                                     $("#Nom" + data.Casque).text(data.Nom);
+                                     $("#Club" + data.Casque).text(data.Club);                                    
+                                     if (data.Tour === -2147483648) {
+                                         $("#Tour" + data.Casque).text("");
+                                     }
+                                     else {
+                                         $("#Tour" + data.Casque).text(data.Tour);    
+                                     }
+                                     $("#Temps" + data.Casque).text(data.Temps);
+                                     $("#DernierTour" + data.Casque).text(data.DernierTour);
+                                     //DernierTour
+                                 }
+                                 else if (data.TypeMessage == "Etat") {
+                                     $("#Etat").text(data.Message);
+                                 }
+                                 else if (data.TypeMessage == "NbTour") {
+                                     $("#NbTour").text(data.Message);
+                                 }
+                                 else if (data.TypeMessage == "Bloc") {
+                                     $("#Bloc").text(data.Message);
+                                 }
+                                 else if (data.TypeMessage == "Serie") {
+                                     $("#Serie").text(data.Message);
+                                 }
+                                 else if (data.TypeMessage == "Vague") {
+                                     $("#Vague").text(data.Message);
+                                 }
+                                 else if (data.TypeMessage == "Trace") {
+                                     $("#Trace").text(data.Message);
+                                 }
+                                 else if (data.TypeMessage == "TypeCourse") {
+                                     $("#TypeCourse").text(data.Message);
+                                 }
+                                 else if (data.TypeMessage == "EtatCourse") {
+                                     $("#EtatCourse").text(data.Message);
+                                 }
+                                 else if (data.TypeMessage == "DepartCourse") {
+                                     $("#DepartCourse").text(data.Message);
+                                     if (data.Message !== "") {
+                                         var a = document.getElementById("DepartCourse");
+                                         a.style.visibility = "visible";
+                                         rasee();
+                                     }
+                                     else {
+                                         var a = document.getElementById("DepartCourse");
+                                         a.style.visibility = "hidden";
+                                         $("#DepartCourse").text("wwwwwwwwwwwwwwwww");
+                                     }
+                                     //$("#FinCourse").hidden = true;
+                                     var a = document.getElementById("FinCourse");
+                                     a.style.visibility = "hidden";
+                                     $("#FinCourse").text("wwwwwwwwwwwwwwwww");
+                                 }
+                                 else if (data.TypeMessage == "FinCourse") {
+                                     $("#FinCourse").text(data.Message);
+                                     if (data.Message !== "") {
+                                         var a = document.getElementById("FinCourse");
+                                         a.style.visibility = "visible";
+                                         // $("#FinCourse").css("visibility", "visible");
+                                         // $("#FinCourse").hidden = false;
+                                         clearTimeout(compte);
+                                     }
+                                     else {
+                                         var a = document.getElementById("FinCourse");
+                                         a.style.visibility = "hidden";
+                                         $("#FinCourse").text("wwwwwwwwwwwwwwwww");
+                                     }
+                                 }
+                                 else if (data.TypeMessage == "ChronoCourse") {
+                                     // $("#FinCourse").text(data.Message);
+                                     chrono();
+                                 }
+                             };
+
+                             //chatChronoHub.client.promptForLogin = function () {
+                             //    $("#username").val(prompt('Quel est votre nom?'));
+                             //    chathub.server.sendMessage($("#username").val(), "s'est connecté");
+                             //}
+
+                             //chathub.client.tempsPatineur = function (noPat, message) {
+                             //    $("#messages").append("<li>" + message + "</li>");
+                             //}
+
+                             //Démarrage de la connexion au hub
+                             $.connection.hub.start().done(function () {
+                                 chatChronoHub.server.tempsTousPatineur();
+                             });
+                         });
+                     </script>
+</body>
+</html >

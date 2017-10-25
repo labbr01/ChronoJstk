@@ -1,0 +1,24 @@
+﻿<Window x:Class="ChronoJstk.Resultats.Resultats"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:resultats="clr-namespace:ChronoJstk.Resultats"
+        xmlns:local="clr-namespace:ChronoJstk"
+        mc:Ignorable="d"
+        Title="Resultats" Height="300" Width="900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel  Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" x:Name="SpEvenements">
+            <resultats:InfoResultatTitre></resultats:InfoResultatTitre>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2">
+            <Button x:Name="OK" Click="OK_Click">OK</Button>
+            <Button x:Name="Cancel" Click="Cancel_Click">Annuler</Button>
+        </StackPanel>
+    </Grid>
+</Window>

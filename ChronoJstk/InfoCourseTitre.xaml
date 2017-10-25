@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="ChronoJstk.InfoCourseTitre"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="100">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" x:Name="Patineur">Patineur</Label>
+        <Label Grid.Row="1" x:Name="Casque">Casque</Label>
+        <Label Grid.Row="2" x:Name="Club">Club</Label>
+        <Label Grid.Row="3" x:Name="Rang">Rang</Label>
+        <Label Grid.Row="4" x:Name="Temps">Temps</Label>
+        <Label Grid.Row="5" x:Name="DerinerTour">Dernier Tour</Label>
+        <Label Grid.Row="6" x:Name="Commentaire">Commentaire</Label>
+        <Label Grid.Row="7" x:Name="NbTour">NbTour</Label>
+        <Label Grid.Row="8" x:Name="btnTour">Inscrire un tour</Label>
+        <Label Grid.Row="9" x:Name="btnNonFin">Non Fin/Depart</Label>
+        <Label Grid.Row="10" x:Name="Evenement">Évènement</Label>
+        <Label Grid.Row="11" x:Name="Evenements" FontSize="25" RenderTransformOrigin="0.5,0.5" Margin="-24,24,-24,-24">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="270"/>
+                    <TranslateTransform X="200"/>
+                </TransformGroup>
+            </Label.RenderTransform> Évènements
+        </Label>
+    </Grid>
+</UserControl>
