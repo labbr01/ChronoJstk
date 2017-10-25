@@ -93,6 +93,10 @@ namespace ChronoJstk.Resultats
             this.DialogResult = true;
         }
 
+        /// <summary>
+        /// Créer un patineur
+        /// </summary>
+        /// <param name="nomFich"></param>
         public void CreerPat(string nomFich)
         {
             StringBuilder sb = new StringBuilder();
