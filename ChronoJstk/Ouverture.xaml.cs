@@ -133,6 +133,19 @@ namespace ChronoJstk
                 this.UsagerFtp.Text = reptmp;
             }
 
+            o = this.softwareKey.GetValue("SiteFtp");
+            if (o != null)
+            {
+                string reptmp = (string)o;
+                this.SiteFtp.Text = reptmp;
+            }
+
+            o = this.softwareKey.GetValue("TravailFtp");
+            if (o != null)
+            {
+                string reptmp = (string)o;
+                this.TravailFtp.Text = reptmp;
+            } 
             o = this.softwareKey.GetValue("MotPasse");
             if (o != null)
             {
@@ -187,11 +200,12 @@ namespace ChronoJstk
                 }
             }
 
+            // this.softwareKey.SetValue("WebResultat", false);
             o = this.softwareKey.GetValue("WebResultat");
             if (o != null)
             {
                 bool ob = bool.Parse(o.ToString());
-                if (ob)
+                if (!ob)
                 {
                     this.cbxWebResultat.SelectedIndex = 0;
                 }
@@ -239,6 +253,18 @@ namespace ChronoJstk
         {
             this.softwareKey.SetValue("UsagerFtp", this.UsagerFtp.Text);
             ParamCommuns.Instance.UsagerFTP = this.UsagerFtp.Text;
+        }
+
+        private void SiteFtp_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            this.softwareKey.SetValue("SiteFtp", this.SiteFtp.Text);
+            ParamCommuns.Instance.SiteFTP = this.SiteFtp.Text;
+        }
+
+        private void TravailFtp_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            this.softwareKey.SetValue("TravailFTP", this.TravailFtp.Text);
+            ParamCommuns.Instance.TravailFTP = this.TravailFtp.Text;
         }
 
 
@@ -302,7 +328,7 @@ namespace ChronoJstk
                     ParamCommuns.Instance.NoCompetition = noCompe;
                     this.softwareKey.SetValue("NomCompetition", nomCompe);
                     ParamCommuns.Instance.NomCompetition = nomCompe;
-                    ProgrammeCourseMgr.DetailCompe(db, noCompe);
+                    ProgrammeCourseMgr.Instance.DetailCompe(db, noCompe);
                     this.ouvertureValidee = true;
                 }
             }
@@ -348,6 +374,30 @@ namespace ChronoJstk
                 ParamCommuns.Instance.RepLog = nom;
             }
                
+        }
+
+
+        //btnTravailFtp_Click
+
+        private void btnTravailFtp_Click(object sender, RoutedEventArgs e)
+        {
+            WPFFolderBrowser.WPFFolderBrowserDialog dlg = new WPFFolderBrowser.WPFFolderBrowserDialog();
+            string reptmp = this.TravailFtp.Text;
+            if (System.IO.Directory.Exists(reptmp))
+            {
+                dlg.InitialDirectory = reptmp;
+            }
+
+
+            dlg.Title = "Répertoire de travail FTP";
+            bool? rep = dlg.ShowDialog();
+            if (rep.HasValue && rep.Value)
+            {
+                string nom = dlg.FileName;
+                this.TravailFtp.Text = nom;
+                this.softwareKey.SetValue("TravailFTP", nom);
+                ParamCommuns.Instance.TravailFTP = nom;
+            }
         }
 
         private void btnRepCL_Click(object sender, RoutedEventArgs e)

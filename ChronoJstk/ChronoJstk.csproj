@@ -116,6 +116,7 @@
     <Compile Include="..\ChronoStick-Input\Model\TypeMessageConfig.cs">
       <Link>ChronistickInput\TypeMessageConfig.cs</Link>
     </Compile>
+    <Compile Include="ResultatCompetitionMgr.cs" />
     <Compile Include="Chat\ChatWithServer.cs" />
     <Compile Include="Chat\ChatWithServer2.cs" />
     <Compile Include="Chat\ChronoSignalR.cs" />
@@ -145,7 +146,12 @@
     <Compile Include="Resultats\Resultats.xaml.cs">
       <DependentUpon>Resultats.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SignalR.Sample\Startup.cs" />
+    <Compile Include="SignalR.Sample\Stock.cs" />
+    <Compile Include="SignalR.Sample\StockTicker.cs" />
+    <Compile Include="SignalR.Sample\StockTickerHub.cs" />
     <Compile Include="TextBlockAutoShrink.cs" />
+    <Compile Include="EpreuveTrace.cs" />
     <Page Include="ChoisirCompetition.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -161,6 +167,7 @@
     <Page Include="InfoCourseTitre.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
     <Page Include="JoindreSerieVague.xaml">
       <SubType>Designer</SubType>
@@ -183,6 +190,7 @@
     </Compile>
     <Compile Include="InfoCourseTitre.xaml.cs">
       <DependentUpon>InfoCourseTitre.xaml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -227,6 +235,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="EpreuveTrace.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -235,6 +246,7 @@
     <AppDesigner Include="Properties\" />
     <None Include="Scripts\jquery-3.2.1.min.map" />
     <None Include="Scripts\jquery-3.2.1.slim.min.map" />
+    <None Include="SignalR.Sample\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -252,6 +264,11 @@
     <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
+    <Content Include="SignalR.Sample\jquery-1.10.2.min.js" />
+    <Content Include="SignalR.Sample\jquery.color-2.1.2.min.js" />
+    <Content Include="SignalR.Sample\SignalR.StockTicker.js" />
+    <Content Include="SignalR.Sample\StockTicker.css" />
+    <Content Include="SignalR.Sample\StockTicker.html" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\PVConsole\linq2db-master\Source\LinqToDB.csproj">
@@ -265,6 +282,10 @@
     <ProjectReference Include="..\ChronoStick-Affaires\ChronoStick-Affaires.csproj">
       <Project>{3870aee0-cdd8-4549-b2aa-427528e231a9}</Project>
       <Name>ChronoStick-Affaires</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PublicationResultat\ResultatPourWeb.csproj">
+      <Project>{c956fbee-b75b-4d0b-8689-f37b32b21233}</Project>
+      <Name>ResultatPourWeb</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -42,7 +42,7 @@ namespace Chronostick_Web
         {
 
             foreach (KeyValuePair<string, string> kvp in messageGeneric) {
-                Clients.Client(Context.ConnectionId).displayMessage(string.Format("{ \"TypeMessage\" : \"{0}\", \"Message\" : \"{0}\"}", kvp.Key, kvp.Value));
+                Clients.Client(Context.ConnectionId).displayMessage("{"  + string.Format("\"TypeMessage\" : \"{0}\", \"Message\" : \"{1}\"", kvp.Key, kvp.Value) + "}");
             }
             
         }
@@ -74,6 +74,9 @@ namespace Chronostick_Web
         {
             //Clients.Client(Context.ConnectionId).promptForLogin();
             Clients.Client(Context.ConnectionId).displayMessage("{ \"TypeMessage\" : \"Etat\", \"Message\" : \"Connecté\"}");
+            TempsTousPatineur();
+            messagesClient();
+
             return base.OnConnected();            
         }
     }

@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -14,6 +16,33 @@ namespace ChronoJstk
 {
     class ProgrammeCourseMgr
     {
+        private static ProgrammeCourseMgr instance = null;
+        private MainWindowViewModel mwvms = null;
+        private ProgrammeCourseMgr()
+        {
+            //mwvms = mwvm;
+        }
+
+        public static ProgrammeCourseMgr Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new ProgrammeCourseMgr();
+                }
+                return instance;
+            }
+        }
+
+        public MainWindowViewModel Mwvm
+        {
+            set
+            {
+                mwvms = value;
+            }
+        }
+
         public void Obtenir(string nomFichier, out int noCompe, out string NomCompe)
         {
             noCompe = -1;
@@ -21,10 +50,10 @@ namespace ChronoJstk
             int noCompeInterne = -1;
             using (DBPatinVitesse db = new DBPatinVitesse(nomFichier))
             {
-                ChoisirCompetition dialog = new ChoisirCompetition();             
+                ChoisirCompetition dialog = new ChoisirCompetition();
                 //dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
                 dialog.ListCompe = new System.Collections.ObjectModel.ObservableCollection<string>(db.Competition.Select(z => z.Lieu).ToList());
-                    dialog.ShowDialog();
+                dialog.ShowDialog();
                 if (dialog.DialogResult.HasValue && dialog.DialogResult.Value)
                 {
                     string nom;
@@ -32,7 +61,7 @@ namespace ChronoJstk
                     {
                         nom = dialog.ListCompe.First();
                     }
-                    else { 
+                    else {
                         nom = dialog.CompeSele;
                     }
                     NomCompe = nom;
@@ -49,26 +78,36 @@ namespace ChronoJstk
             }
         }
 
-        public static void RafraichirCompe()
+        public void RafraichirCompe()
         {
-            string nomFichier =  ParamCommuns.Instance.NomFichierPat;
+            string nomFichier = ParamCommuns.Instance.NomFichierPat;
             string nomCompe = ParamCommuns.Instance.NomCompetition;
             int noCompt = ParamCommuns.Instance.NoCompetition;
             string connectString = string.Format(@"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = {0}; User Id = admin; Password =; ", nomFichier);
-            try { 
-            using (DBPatinVitesse db = new DBPatinVitesse(connectString))
-            {
-                DetailCompe(db, noCompt);
-            }
+            try {
+                using (DBPatinVitesse db = new DBPatinVitesse(connectString))
+                {
+                    DetailCompe(db, noCompt);
+                }
             }
             catch (Exception e)
             {
                 MessageBox.Show("Erreur de rafraichissement");
             }
+
+            if (ParamCommuns.Instance.WebResultat)
+            {
+                List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
+                if (res != null && res.Count > 0)
+                {
+
+                    mwvms.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
+                }
+            }
         }
         private static System.Timers.Timer aTimer;
-        
-        public static void MiseAJourCompe()
+
+        public void MiseAJourCompe()
         {
             // Create a timer with a two second interval.
             aTimer = new System.Timers.Timer(5000000);
@@ -78,7 +117,7 @@ namespace ChronoJstk
             aTimer.Enabled = true;
         }
 
-        public static void InterrompreMajCompe()
+        public void InterrompreMajCompe()
         {
             if (aTimer == null)
             {
@@ -87,7 +126,7 @@ namespace ChronoJstk
             aTimer.Stop();
         }
 
-        public static void ReprendreMajCompe()
+        public void ReprendreMajCompe()
         {
             if (aTimer == null)
             {
@@ -96,16 +135,40 @@ namespace ChronoJstk
             aTimer.Start();
         }
 
-        private static void OnTimedEvent(Object source, ElapsedEventArgs e)
+        private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
             Console.WriteLine("The Elapsed event was raised at {0:HH:mm:ss.fff}",
                               e.SignalTime);
             RafraichirCompe();
+
+
+        }
+
+        public List<EpreuveTrace> _traces = null;
+        public List<EpreuveTrace> Traces
+        {
+            get
+            {
+                if (_traces == null)
+                {
+                    string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    FileInfo fi = new FileInfo(path);
+                    path = Path.Combine(fi.DirectoryName, "EpreuveTrace.json");
+                    StreamReader sr = new StreamReader(path);
+                    string json = sr.ReadToEnd();
+                    Byte[] b = System.Text.Encoding.UTF8.GetBytes(json);
+                    var serializer = new DataContractJsonSerializer(typeof(List<EpreuveTrace>));
+                    MemoryStream ms = new MemoryStream(b);
+                    _traces = serializer.ReadObject(ms) as List<EpreuveTrace> ;
+                }
+
+                return _traces;
+            }
         }
 
 
 
-        public static void DetailCompe(DBPatinVitesse db, int noCompeInterne)
+        public void DetailCompe(DBPatinVitesse db, int noCompeInterne)
     {
         var programmes = new ObservableCollection<ProgrammeCourse>();
         var descVagues = new Dictionary<string, List<PatineurVague>>();
@@ -141,6 +204,7 @@ namespace ChronoJstk
                           Epreuve = vag.Qual_ou_Fin,
                           Groupe = patcmp.Groupe,
                           LongueurEpreuve = diststd.LongueurEpreuve,
+                          Distance = diststd.Distance,
                           NoBloc = progcrs.NoBloc,
                           Sexe = patineur.Sexe
                       };
@@ -154,14 +218,23 @@ namespace ChronoJstk
         var laTotale2 = laTotale1.ToList();
         nbp = laTotale2.Count();
 
-        var b = laTotale2.Select(z => new { z.Epreuve, z.Groupe, z.LongueurEpreuve, z.NoBloc, z.ChiffreVague }).Distinct().ToList();
+        var b = laTotale2.Select(z => new { z.Epreuve, z.Groupe, z.LongueurEpreuve, z.NoBloc, z.ChiffreVague, z.Distance }).Distinct().ToList();
         foreach (var z in b.OrderBy(z => z.NoBloc).ThenBy(z => z.ChiffreVague))
-        {
+        {                
             ProgrammeCourse pc = new ProgrammeCourse();
+                EpreuveTrace t = Traces.SingleOrDefault(et => et.Epreuve == z.Distance);
+                if (t == null)
+                {
+                    t = new EpreuveTrace();
+                    t.Epreuve = z.Distance;
+                    t.Trace = 100;
+                    MessageBox.Show(string.Format("La distance {0} n'est pas configurée, on présume un tracé de 100 mètres", z.Distance));
+                    Traces.Add(t);
+                }
             //pc.Type == z.Epreuve;
             pc.Bloc = z.NoBloc;
             pc.Epreuve = z.LongueurEpreuve.ToString();
-            pc.Trace = 100;
+            pc.Trace = t.Trace;
             pc.NbTour = z.LongueurEpreuve / pc.Trace;
             var x = laTotale2.Where(k => k.NoBloc == z.NoBloc && k.Epreuve == z.Epreuve && k.Groupe == z.Groupe && k.LongueurEpreuve == z.LongueurEpreuve);
             int nb = x.Count();
@@ -364,6 +437,7 @@ namespace ChronoJstk
         public string Club { get; set; }
         public int NoCasque { get; set; }
         public double Temps { get; set; }
+        public string Distance { get; set; }
         public int Point { get; set; }
         public int Rang { get; set; }
         public string Code { get; set; }

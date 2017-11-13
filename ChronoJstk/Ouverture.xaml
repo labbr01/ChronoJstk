@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChronoJstk"
         mc:Ignorable="d"
-        Title="Ouverture" Height="400" Width="650">
+        Title="Ouverture" Height="425" Width="650">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="175"></RowDefinition>
@@ -69,6 +69,7 @@
                 <RowDefinition Height="25"></RowDefinition>
                 <RowDefinition Height="25"></RowDefinition>
                 <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="25"></RowDefinition>
                 <RowDefinition Height="25"></RowDefinition>                
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -79,22 +80,29 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="10"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" Grid.Column="1">Url diffusion</Label>
+            <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="100">Url diffusion</Label>
             <TextBox Grid.Row="0" Grid.Column="2" x:Name="UrlWeb" TextChanged="UrlWeb_TextChanged"></TextBox>
             <Label Grid.Row="0" Grid.Column="3" Content="SignalR Server"/>
             <TextBox Grid.Row="0" Grid.Column="4" x:Name="SignalRServer" TextChanged="UrlHub_TextChanged"></TextBox>
-            <Label Grid.Row="1" Grid.Column="1">Usager FTP</Label>
-            <TextBox Grid.Row="1" Grid.Column="2" x:Name="UsagerFtp" TextChanged="UsagerFtp_TextChanged"></TextBox>
-            <Label Grid.Row="1" Grid.Column="3">Mot Passe</Label>
-            <PasswordBox Grid.Row="1" Grid.Column="4" x:Name="MotPasse" PasswordChanged="MotPasse_PasswordChanged"></PasswordBox>
-            <Label Grid.Row="2" Grid.Column="1">Port config.</Label>
-            <TextBox Grid.Row="2" Grid.Column="2" x:Name="PortConfig" TextChanged="PortConfig_TextChanged"></TextBox>
-            <Label Grid.Row="2" Grid.Column="3">Host config.</Label>
-            <TextBox Grid.Row="2" Grid.Column="4" x:Name="HostConfig" TextChanged="HostConfig_TextChanged"></TextBox>
-            <Label Grid.Row="3" Grid.Column="1">Port input</Label>
-            <TextBox Grid.Row="3" Grid.Column="2" x:Name="PortInput" TextChanged="PortInput_TextChanged"></TextBox>
-            <Label Grid.Row="3" Grid.Column="3">SignalR Hub</Label>
-            <TextBox Grid.Row="3" Grid.Column="4" x:Name="SignalRHub" TextChanged="SignalRHub_TextChanged"></TextBox>
+            <Label Grid.Row="1" Grid.Column="1">Site FTP</Label>
+            <TextBox Grid.Row="1" Grid.Column="2" x:Name="SiteFtp" TextChanged="SiteFtp_TextChanged"></TextBox>
+            <Label Grid.Row="1" Grid.Column="3">Travail FTP</Label>
+            <StackPanel Grid.Row="1" Grid.Column="4" Orientation="Horizontal">
+                <TextBox x:Name="TravailFtp" Width="150" TextChanged="TravailFtp_TextChanged"></TextBox>
+                <Button x:Name="btnTavailFtp" Click="btnTravailFtp_Click">Répertoire</Button>
+            </StackPanel>
+            <Label Grid.Row="2" Grid.Column="1">Usager FTP</Label>
+            <TextBox Grid.Row="2" Grid.Column="2" x:Name="UsagerFtp" TextChanged="UsagerFtp_TextChanged"></TextBox>
+            <Label Grid.Row="2" Grid.Column="3">Mot Passe</Label>
+            <PasswordBox Grid.Row="2" Grid.Column="4" x:Name="MotPasse" PasswordChanged="MotPasse_PasswordChanged"></PasswordBox>
+            <Label Grid.Row="3" Grid.Column="1">Port config.</Label>
+            <TextBox Grid.Row="3" Grid.Column="2" x:Name="PortConfig" TextChanged="PortConfig_TextChanged"></TextBox>
+            <Label Grid.Row="3" Grid.Column="3">Host config.</Label>
+            <TextBox Grid.Row="3" Grid.Column="4" x:Name="HostConfig" TextChanged="HostConfig_TextChanged"></TextBox>
+            <Label Grid.Row="4" Grid.Column="1">Port input</Label>
+            <TextBox Grid.Row="4" Grid.Column="2" x:Name="PortInput" TextChanged="PortInput_TextChanged"></TextBox>
+            <Label Grid.Row="4" Grid.Column="3">SignalR Hub</Label>
+            <TextBox Grid.Row="4" Grid.Column="4" x:Name="SignalRHub" TextChanged="SignalRHub_TextChanged"></TextBox>
 
         </Grid>
         <Grid Grid.Row="3">

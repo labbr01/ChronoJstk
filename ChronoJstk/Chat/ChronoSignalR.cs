@@ -16,12 +16,9 @@ namespace ChronoJstk.Chat
         public ChronoSignalR()
         {
             string url = "http://localhost:62751/signalr/hubs";
+            url = ParamCommuns.Instance.SignalRServer;
             string hub = "chatChronoHub";
-            if (ConfigurationManager.AppSettings.HasKeys() && ConfigurationManager.AppSettings.AllKeys.Contains("SignalRServer"))
-            {
-                url = ConfigurationManager.AppSettings["SignalRServer"];
-                hub = ConfigurationManager.AppSettings["SignalRHub"];
-            }
+            hub = ParamCommuns.Instance.SignalRHub;
             _connection = new HubConnection(url);
             proxy = _connection.CreateHubProxy(hub);
             _connection.Start().Wait(TimeSpan.FromMinutes(1));
@@ -53,7 +50,10 @@ namespace ChronoJstk.Chat
             EtatCourse = 6,
             DepartCourse = 7,
             ChronoCourse = 8,
-            FinCourse = 9
+            FinCourse = 9,
+            Defilement = 10,
+            Defilement1 = 11,
+            NomCompe = 12
         }
     }
 }

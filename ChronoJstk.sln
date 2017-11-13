@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToDB", "..\PVConsole\li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PVModele", "..\PVConsole\PVModele\PVModele.csproj", "{1760DBD2-A921-4697-B781-65A72058C407}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultatPourWeb", "PublicationResultat\ResultatPourWeb.csproj", "{C956FBEE-B75B-4D0B-8689-F37B32B21233}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{1760DBD2-A921-4697-B781-65A72058C407}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1760DBD2-A921-4697-B781-65A72058C407}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1760DBD2-A921-4697-B781-65A72058C407}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C956FBEE-B75B-4D0B-8689-F37B32B21233}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C956FBEE-B75B-4D0B-8689-F37B32B21233}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C956FBEE-B75B-4D0B-8689-F37B32B21233}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C956FBEE-B75B-4D0B-8689-F37B32B21233}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

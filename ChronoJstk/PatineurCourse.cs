@@ -39,7 +39,9 @@ namespace ChronoJstk
         [DataMember(IsRequired = false)]
         public bool Termine { get; set; }
 
-        
+        [DataMember(IsRequired = false)]
+        public int NoCasqueWeb { get; set;  }
+
         private int _NbTour = int.MinValue;
         [DataMember(IsRequired = false)]
         public int NbTour
@@ -87,34 +89,7 @@ namespace ChronoJstk
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        //private List<EvenementPatineur> _DerniersTours;
-        //[DataMember]
-        //public List<EvenementPatineur> DerniersTours
-        //{
-        //    get
-        //    {
-        //        if (_DerniersTours == null)
-        //        {
-        //            _DerniersTours = new List<EvenementPatineur>();
-        //        }
-        //        _DerniersTours.Clear();
-
-        //        EvenementPatineur ep = this.Evenements.Where(z => z.Evenement == "DEPART").Last();
-        //        int pos = this.Evenements.IndexOf(ep);
-
-        //        for (int i = pos + 1; i < this.Evenements.Count; i++)
-        //        {
-        //            if (this.Evenements[i].NbTour == 0 && this.Evenements[i].Evenement == "TOUR")
-        //            {
-        //                _DerniersTours.Add(this.Evenements[i]);
-        //            }
-        //        }
-
-        //        return _DerniersTours;
-        //    }
-        //}
+        public event PropertyChangedEventHandler PropertyChanged;        
 
         public void Reprise(DateTime dt)
         {
@@ -155,8 +130,17 @@ namespace ChronoJstk
         {
             if (this.ccw != null)
             {
-                string msg = "{ \"TypeMessage\" : \"Patineur\", \"Casque\":" + this.Patineur.Casque.ToString() + ", \"Nom\": \"" + this.Patineur.Patineurs + "\", \"Club\": \"" + this.Patineur.Club + "\", \"Tour\": " + this.NbTour.ToString() + "  , \"Temps\" : \"" + this.DernierTemps + "\", \"DernierTour\" : \"" + this.DernierTour + "\" }";
-                this.ccw.AfficherWeb(this.Patineur.Casque, msg);
+                string msg = "{ \"TypeMessage\" : \"Patineur\", \"NoCasqueWeb\": " + NoCasqueWeb.ToString() + ", \"Casque\": \"" + this.Casque + "\", \"Nom\": \"" + this.Patineur.Patineurs + "\", \"Club\": \"" + this.Patineur.Club + "\", \"Tour\": " + this.NbTour.ToString() + "  , \"Temps\" : \"" + this.DernierTemps + "\", \"DernierTour\" : \"" + this.DernierTour + "\" }";
+                this.ccw.AfficherWeb(this.NoCasqueWeb, msg);
+            }
+        }
+
+        public void ResetAffichage()
+        {
+            if (this.ccw != null)
+            {
+                string msg = "{ \"TypeMessage\" : \"Patineur\", \"NoCasqueWeb\": " + NoCasqueWeb.ToString() + ", \"Casque\":\"" + this.Casque + "\", \"Nom\": \"\", \"Club\": \"\", \"Tour\":-1, \"Temps\" : \"\", \"DernierTour\" : \"\" }";
+                this.ccw.AfficherWeb(this.NoCasqueWeb, msg);
             }
         }
 
@@ -203,15 +187,21 @@ namespace ChronoJstk
                 return;
             }
 
+            if (this.Evenements == null || this.Evenements.Count == 0)
+            {
+                MessageBox.Show("La course doit être en cours afin d'enregistrer un temps");
+                return;
+            }
+
             EvenementPatineur eve = this.Evenements.Where(z => z.Evenement == "DEPART").Last();
             if (eve != null)
             {
                 DateTime dep = eve.HeureEvenement;
                 int pos = this.Evenements.IndexOf(eve);
                 List<EvenementPatineur> lep = new List<EvenementPatineur>();
-                for (int i = pos + 1; i < this.Evenements.Count(); i++)
+                for (int i = pos ; i < this.Evenements.Count(); i++)
                 {
-                    if (this.Evenements[i].Evenement == "TOUR")
+                    if (this.Evenements[i].Evenement == "TOUR" || this.Evenements[i].Evenement == "DEPART")
                     {
                         lep.Add(this.Evenements[i]);
                     }
@@ -279,12 +269,12 @@ namespace ChronoJstk
                     this.TourComplete(this, new EventArgs());
                 }
 
+                this.NotifierWeb();
+
                 if (finCourse)
                 {
                     this.FinCourse(ep.HeureEvenement, ep.HeureEvenement - dep);
-                }
-
-                this.NotifierWeb();
+                }                
             }
         }
 

@@ -1,0 +1,34 @@
+﻿[
+  {
+    "Epreuve": "85",
+    "Trace": 85
+  },
+  {
+    "Epreuve": "170",
+    "Trace": 85
+  },
+  {
+    "Epreuve": "200",
+    "Trace": 100
+  },
+  {
+    "Epreuve": "300",
+    "Trace": 100
+  },
+  {
+    "Epreuve": "400",
+    "Trace": 100
+  },
+  {
+    "Epreuve": "800",
+    "Trace": 100
+  },
+  {
+    "Epreuve": "1500",
+    "Trace": 100
+  },
+  {
+    "Epreuve": "2000pts",
+    "Trace": 100
+  }
+]

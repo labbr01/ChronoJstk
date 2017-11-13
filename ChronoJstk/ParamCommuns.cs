@@ -31,6 +31,8 @@ namespace ChronoJstk
         public string SignalRServer { get; set; }
         public string SignalRHub { get; set; }
         public string UsagerFTP { get; set; }
+        public string SiteFTP { get; set; }
+        public string TravailFTP { get; set; }
         //public string UrlHub { get; set; }
         public string RepCL { get; set; }
         public string RepLog { get; set; }

@@ -102,7 +102,7 @@ namespace ChronoJstk
             {
                 this._lblEtatTxt = value;
                 this.NotifierChangementPropriete("lblEtatTxt");
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.EtatCourse, this._lblEtatTxt);
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.EtatCourse, this._lblEtatTxt);
             }
         }
         private string _lblDepartTxt;
@@ -117,9 +117,9 @@ namespace ChronoJstk
             {
                 this._lblDepartTxt = value;
                 this.NotifierChangementPropriete("lblDepartTxt");
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.DepartCourse, this._lblDepartTxt);
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.DepartCourse, this._lblDepartTxt);
                 // Va partir du côté javascript 
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.ChronoCourse, this._lblDepartTxt);
+                //this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.ChronoCourse, this._lblDepartTxt);
             }
         }
         private string _lblChronoTxt;
@@ -150,7 +150,7 @@ namespace ChronoJstk
             {
                 this._lblFinTxt = value;
                 this.NotifierChangementPropriete("lblFinTxt");
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.FinCourse, this._lblFinTxt);
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.FinCourse, this._lblFinTxt);
             }
         }
         private DateTime depart;
@@ -198,7 +198,7 @@ namespace ChronoJstk
                     this.serieSel = this.series.First();
                     this.NotifierChangementPropriete("blocSel");
                 }
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Bloc, this._blocSel.ToString());
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Bloc, this._blocSel.ToString());
             }
         }
         private int _serieSel;
@@ -230,7 +230,7 @@ namespace ChronoJstk
                     this.vagueSel = this.vagues.First();
                     this.NotifierChangementPropriete("serieSel");
                 }
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Serie, this._serieSel.ToString());
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Serie, this._serieSel.ToString());
             }
         }
         private string _vagueSel;
@@ -254,6 +254,13 @@ namespace ChronoJstk
             }
         }
 
+
+        /// <summary>
+        /// Préparer les vagues pour les patineurs
+        /// </summary>
+        /// <param name="lkvp"></param>
+        /// <remarks>
+        /// Attention aux vagues doubles, il faut augmenter le numéro de patineur</remarks>
         private void PreparerVagues(List<KeyValuePair<int, string>> lkvp)
         {
             bool vagueDouble = lkvp.Count() > 1;
@@ -312,6 +319,7 @@ namespace ChronoJstk
                 {
                     pcx.TourComplete -= Pc_TourComplete;
                     pcx.CourseTerminee -= this.Pc_CourseTerminee;
+                    pcx.ResetAffichage();
                 }
                 this.patcs.Clear();
             }
@@ -343,6 +351,7 @@ namespace ChronoJstk
 
 
             ObservableCollection<PatineurVague> patvs = new ObservableCollection<PatineurVague>();
+            int nbPat = 0;
             foreach (KeyValuePair<int, string> kvp in lkvp)
             {
                 int serieTravail = kvp.Key;
@@ -351,7 +360,7 @@ namespace ChronoJstk
                 {
                     return;
                 }
-                if (!vagueTravail.Contains(kvp.Value))
+                if (!vagues.Contains(vagueTravail))
                 {
                     vagues.Add(vagueTravail);
                 }
@@ -365,24 +374,32 @@ namespace ChronoJstk
 
                 patvsLocal.OrderBy(c=> c.Casque).ToList().ForEach(z =>
                 {
+                    nbPat += 1;
+                    string casque = string.Empty;
+
+                    if (vagueDouble)
+                    {
+                        casque = string.Format("{0}{1}:{2}", serieTravail, vagueTravail, z.Casque.ToString());
+                    }
+                    else {
+                        casque = z.Casque.ToString();
+                    }
+
 
                     PatineurCourse pc = new PatineurCourse()
-                    {                 
-                        Casque = z.Casque.ToString(),
-                        Bloc = this.blocSel,
+                    {
+                        Casque = casque,
+                        Bloc = this.blocSel,                        
                         Serie = serieTravail,
                         Vague = vagueTravail,
                         Patineur = z,
                         NbTourCourse = System.Convert.ToInt32(Math.Truncate(nbTour)),
                         Evenements = new ObservableCollection<EvenementPatineur>(),
                         Temps = "0:00.00",
+                        NoCasqueWeb = nbPat,
                         AssignerChronoWeb = this.ccw
                     };
 
-                    if (vagueDouble)
-                    {
-                        pc.Casque = string.Format("{0}{1}:{2}", serieTravail, vagueTravail, pc.Casque);
-                    }
 
                     pc.TourComplete += Pc_TourComplete;
                     pc.CourseTerminee += Pc_CourseTerminee;
@@ -400,7 +417,7 @@ namespace ChronoJstk
 
             if (!string.IsNullOrEmpty(this._vagueSel))
             {
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Vague, string.Format("{0}",",",vagues.Distinct()));
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Vague, string.Format("{0}",string.Join(",",vagues.Distinct())));
             }
 
 
@@ -429,7 +446,7 @@ namespace ChronoJstk
             set
             {
                 this._traceTxt = value; this.NotifierChangementPropriete("traceTxt");
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Trace, this._traceTxt.ToString());
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Trace, this._traceTxt.ToString());
             }
         }
         private double _nbTourTxt;
@@ -440,7 +457,7 @@ namespace ChronoJstk
             set
             {
                 this._nbTourTxt = value; this.NotifierChangementPropriete("nbTourTxt");
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.NbTour, this._nbTourTxt.ToString());
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.NbTour, this._nbTourTxt.ToString());
             }
         }
         private bool _blocIsEnabled;
@@ -460,7 +477,7 @@ namespace ChronoJstk
             set
             {
                 this._typeTxt = value; this.NotifierChangementPropriete("typeTxt");
-                this.afficherMessageWeb(Chat.ChronoSignalR.TypeMessage.TypeCourse, this._typeTxt);
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.TypeCourse, this._typeTxt);
             }
         }
 
@@ -486,7 +503,7 @@ namespace ChronoJstk
             }
         }
 
-        private void afficherMessageWeb(Chat.ChronoSignalR.TypeMessage type, string message)
+        public void AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage type, string message)
         {
             if (this.logMessages.ContainsKey(type))
             {
@@ -550,7 +567,7 @@ namespace ChronoJstk
                 return;
             }
 
-            ProgrammeCourseMgr.InterrompreMajCompe();
+            ProgrammeCourseMgr.Instance.InterrompreMajCompe();
             this.JoindreVisibility = Visibility.Visible;
             this.InterrompreVisibility = Visibility.Visible;
             DateTime dt = DateTime.Now;
@@ -596,14 +613,91 @@ namespace ChronoJstk
             this.serieIsEnabled = false;
             this.vagueIsEnabled = false;
 
+            // Inviter les patineurs pour l'appel
+            this.AppelPatineurs();
+            
+        }
 
-            //            Process() // method to be called after regular interval in Timer
-            //{
-            //                // lengthy process, i.e. data fetching and processing etc.
+        public void AppelPatineurs()
+        {
+            Dictionary<string, List<string>> appeles = new Dictionary<string,List<string>>();
+            List<ProgrammeCourse> lpg = this.Pcg.ToList(); ;
 
-            //                // here comes the UI update part
-            //                Dispatcher.Invoke((Action)delegate () { /* update UI */ });
-            //            }
+            int serie = this.serieSel;
+            string vague = this.vagueSel;
+            int bloc = this.blocSel;
+            ProgrammeCourse pcActuel = lpg.SingleOrDefault(z => z.Bloc == bloc && z.Serie == serie);
+
+            int pos = pcActuel.LVagues.IndexOf(vague);
+            int nbAppeles = 0;
+            string t = pcActuel.TypeCourse;
+            for (int i = pos + 1; i < pcActuel.LVagues.Count; i++)
+            {
+                //appeles.Add(string.Format("{0}{1}",serie,pcActuel.LVagues[i]));
+                List<PatineurVague> lp = ParamCommuns.Instance.DescVagues.SingleOrDefault(z => z.Key == serie.ToString().PadLeft(4, '0')).Value;                
+                IEnumerable<PatineurVague> lp2 = lp.Where(z => z.Vague.CompareTo(vague) > 0);
+                nbAppeles = lp2.Count();
+                lp2.Select(z => z.Groupe).Distinct().ToList().ForEach(z => {
+                    if (appeles.ContainsKey(z))
+                    {
+                        appeles[z].Add(string.Format("{0}{1}", serie, pcActuel.LVagues[i]));
+                    }
+                    else {
+                        appeles.Add(z, new List<string>() { string.Format("{0}{1}", serie, pcActuel.LVagues[i]) } ); // string.Format("{0} : {1}{2}", z, serie, pcActuel.LVagues[i]));
+                    }
+                });
+            }
+
+            int p = lpg.IndexOf(pcActuel);
+            while (nbAppeles < 30)
+            {
+                if (p < lpg.Count())
+                {
+                    if (p + 1 >= lpg.Count) {
+                        break;
+                    }
+                    ProgrammeCourse pcActuelSuivant = lpg[p + 1];
+                    if (pcActuelSuivant.TypeCourse != t)
+                    {
+                        break;
+                    }
+                    List<PatineurVague> lp3 = ParamCommuns.Instance.DescVagues.SingleOrDefault(z => z.Key == pcActuelSuivant.Serie.ToString().PadLeft(4, '0')).Value;
+                    nbAppeles += lp3.Count();
+                    //lp3.Select(z => z.Groupe).Distinct().ToList().ForEach(z => appeles.Add(pcActuel.LVagues.ForEach(k => (string.Format("{0} : {1}{2}", z, pcActuelSuivant.Serie, k)))));
+                    lp3.Select(z => z.Groupe).Distinct().ToList().ForEach(z =>
+                    {
+                        pcActuelSuivant.LVagues.ForEach(y =>
+                        {
+                            if (appeles.ContainsKey(z))
+                            {
+                                appeles[z].Add(string.Format("{0}{1}", pcActuelSuivant.Serie, y));
+                            }
+                            else
+                            {
+                                appeles.Add(z, new List<string>() { string.Format("{0}{1}", pcActuelSuivant.Serie, y) }); // string.Format("{0} : {1}{2}", z, serie, pcActuel.LVagues[i]));
+                            }
+
+                            //appeles.Add(string.Format("{0} : {1}{2}", z, pcActuelSuivant.Serie, y));
+                        });
+                    });
+                    p += 1;
+                }
+                else { break; }
+            }
+
+            if (appeles.Count() > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                appeles.Keys.ToList().ForEach(z => sb.Append(string.Format("{0} : [{1}],", z, string.Join(",", appeles[z]))));
+                string texte = sb.ToString();
+                texte = texte.Substring(0, texte.Length - 1);
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement, string.Format("Patineurs à l'appel : {0}", texte));
+            }
+            else
+            {
+                this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement, "Pause pour resurfaçage");
+            }
+
         }
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
@@ -725,8 +819,8 @@ namespace ChronoJstk
 
             }
 
-            ProgrammeCourseMgr.RafraichirCompe();
-            ProgrammeCourseMgr.ReprendreMajCompe();
+            ProgrammeCourseMgr.Instance.RafraichirCompe();
+            ProgrammeCourseMgr.Instance.ReprendreMajCompe();
 
             // Passer au suivant
             if (this.vagues.IndexOf(this._vagueSel) == this.vagues.Count() - 1)
@@ -776,74 +870,7 @@ namespace ChronoJstk
         {
             if (MessageBox.Show(string.Format("Diffusion du compte tour sur le web ({0}?", this.diffusionWeb), "Diffusion Web", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                ccw = new Chat.ChronoSignalR();
-                if (this.patcs != null)
-                {
-                    foreach (PatineurCourse pc in this.patcs)
-                    {
-                        pc.AssignerChronoWeb = ccw;
-                    }
-
-                    foreach (KeyValuePair<Chat.ChronoSignalR.TypeMessage, string> kvp in this.logMessages.ToList())
-                    {
-                        this.afficherMessageWeb(kvp.Key, kvp.Value);
-                    }
-                }
-                //Thread.Sleep(2000);
-                //ccw.MessageChrono("1");
-                //Thread.Sleep(2000);
-                //ccw.MessageChrono("4");
-                //Thread.Sleep(2000);
-                //ccw.MessageChrono("2");
-                //Thread.Sleep(2000);
-                //ccw.MessageChrono("3");
-                //Thread.Sleep(2000);
-                //ccw.MessageChrono("5");
-
-
-                //BackgroundWorker bw = new BackgroundWorker();
-                //bw.DoWork += Bw_DoWork;
-                //bw.RunWorkerAsync();
-                //bw
-
-
-
-
-                //this.are = new AutoResetEvent(false);
-
-                //Thread thread = new Thread(new ThreadStart(WorkThreadFunction));
-                //this.are.Reset();                
-                //thread.Start();
-                ////thread.ExecutionContext
-                //Thread.Sleep(2000);
-                //this.message = "1";
-                //this.are.Set();
-                //Thread.Sleep(2000);
-                //this.message = "2";
-                //this.are.Set();
-                //Thread.Sleep(2000);
-                //this.message = "5";                
-                //this.are.Set();
-                //Thread.Sleep(2000);
-                //this.message = "4";
-                //this.are.Set();
-                //Thread.Sleep(2000);
-                //this.message = "3";
-                //this.are.Set();
-
-                ////////if (chat == null) {
-                //////    AutoResetEvent are = new AutoResetEvent(true);
-
-                //////Chat.ChatWithServer2.Msg = "1";
-                //////are.Reset();
-                //////Chat.ChatWithServer2.Main(are);
-                //////Chat.ChatWithServer2.Msg = "2";
-
-                ////////chat = Chat.ChatWithServer2(are);
-                ////////    Task t = chat.init();                    
-                ////////    t = chat.StatutCourse(this.lblEtat.Content as string);
-                ////////    t.Wait();
-                ////////}
+                DiffusionWeb();            
             }
             else
             {
@@ -860,6 +887,30 @@ namespace ChronoJstk
             }
             this.lblEtatTxt = "REPRISE";
             this.lblEtatBackground = new SolidColorBrush(Colors.Yellow);
+        }
+
+        public void DiffusionWeb()
+        {
+            if (ParamCommuns.Instance.WebChrono == false)
+            {
+                return;
+            }
+
+            this.diffusionWeb = true;
+            ccw = new Chat.ChronoSignalR();
+            this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.NomCompe, string.Format("{0}", ParamCommuns.Instance.NomCompetition));
+            if (this.patcs != null)
+            {
+                foreach (PatineurCourse pc in this.patcs)
+                {
+                    pc.AssignerChronoWeb = ccw;
+                }
+
+                foreach (KeyValuePair<Chat.ChronoSignalR.TypeMessage, string> kvp in this.logMessages.ToList())
+                {
+                    this.AfficherMessageWeb(kvp.Key, kvp.Value);
+                }
+            }
         }
 
         public void Sauvegarde_Click(object sender, RoutedEventArgs e)
@@ -1000,10 +1051,10 @@ namespace ChronoJstk
                     string connectString = string.Format(@"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = {0}; User Id = admin; Password =; ", nomFichier);
                     //List<ProgrammeCourse> lpgm = null;
                     //Dictionary<string, List<PatineurVague>> lpv = null;
-                    ProgrammeCourseMgr pgm = new ProgrammeCourseMgr();
+                    ProgrammeCourseMgr.Instance.Mwvm = this;
                     int noCompt = -1;
                     string nomCompe;
-                    pgm.Obtenir(connectString, out noCompt, out nomCompe);
+                    ProgrammeCourseMgr.Instance.Obtenir(connectString, out noCompt, out nomCompe);
                     if (noCompt != -1)
                     {
                         ParamCommuns.Instance.NomFichierPat = this.nomFichierPat;
@@ -1018,6 +1069,7 @@ namespace ChronoJstk
         public void OuvrirCompetition(string nomCompe, int noCompt)
         {
             this.TitreFenetre = nomCompe;
+            this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.NomCompe, string.Format("{0}",nomCompe) );
             this.noCompe = noCompt;
             this.vagues.Clear();
             this.series.Clear();

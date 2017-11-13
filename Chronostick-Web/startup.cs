@@ -15,11 +15,21 @@ namespace Chronostick_Web
     {
         public void Configuration(Owin.IAppBuilder app)
         {
+            var hubConfiguration = new HubConfiguration
+            {
+#if DEBUG
+                EnableDetailedErrors = true
+#else
+            EnableDetailedErrors = false
+#endif
+            };
+
             //var idProvider = new CustomUserIdProvider();
 
             //GlobalHost.DependencyResolver.Register(typeof(IUserIdProvider), () => idProvider);
             //app.MapSignalR();
             app.MapSignalR();
+            //Microsoft.AspNet.SignalR.StockTicker.Startup.ConfigureSignalR(app);
         }
     }
 }

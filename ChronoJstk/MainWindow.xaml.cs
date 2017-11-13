@@ -29,25 +29,41 @@ namespace ChronoJstk
     {
         private MainWindowViewModel mwvm = null;
 
+        /// <summary>
+        /// Initialize a new instance of the MainWindow class.
+        /// </summary>
         public MainWindow()
         {
             MainWindowViewModel mwvm = new MainWindowViewModel(this.Dispatcher, this.EnleverTousEnfantSP, this.AjouterEnfantSP);            
             this.DataContext = mwvm;
+            ProgrammeCourseMgr.Instance.Mwvm = mwvm;
             this.mwvm = mwvm;
             this.Loaded += MainWindow_Loaded;            
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            
             Ouverture cc = new Ouverture();
             bool? r = cc.ShowDialog();
             if (r.HasValue && r.Value)
             {
                 if (cc.OuvertureValidee)
                 {
+                    ResultatCompetitionMgr.Instance.EffacerResultats();
                     string nomCompe = ParamCommuns.Instance.NomCompetition;
                     int noCompt = ParamCommuns.Instance.NoCompetition;
                     this.mwvm.OuvrirCompetition(nomCompe, noCompt );
+                    this.mwvm.DiffusionWeb();
+                    if (ParamCommuns.Instance.WebResultat)
+                    {
+                        List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
+                        if (res != null && res.Count > 0)
+                        {
+                            this.mwvm.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
+                        }
+                    }
+                    this.mwvm.AppelPatineurs();
                 }
             }
         }
