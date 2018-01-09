@@ -28,18 +28,35 @@ namespace ChronoJstk.Resultats
         {
             InitializeComponent();
             this.DataContext = this;
-            this.traiterEvenement = false;            
+            this.traiterEvenement = false;
+            this.InfoResultatDataElement = new InfoResultatData();
+            this.InfoResultatDataElement.PropertyChanged += InfoResultatDataElement_PropertyChanged;
         }
 
-        public InfoResultatPatineur(PatineurCourse patc)
+        public InfoResultatPatineur(PatineurCourse patc, int nbPatVag)
         {
             InitializeComponent();
+            this.DataContext = this;
             this.InfoResultatDataElement = new InfoResultatData();
-            this.DataContext = this;            
+            this.InfoResultatDataElement.PropertyChanged += InfoResultatDataElement_PropertyChanged;
+            this.RangPossibles = new ObservableCollection<int>();
+            for (int i = 1; i <= nbPatVag; i++)
+            {
+                this.RangPossibles.Add(i);
+            }            
             this.AjouterResultatPatineur(patc);            
             this.NotifierChangementPropriete("NomPatineur");
             this.NotifierChangementPropriete("CasquePatineur");
             this.NotifierChangementPropriete("ClubPatineur");            
+        }
+
+        private void InfoResultatDataElement_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(e.PropertyName));
+                this.PropertyChanged(this, new PropertyChangedEventArgs("RangPatineur"));
+            }
         }
 
         public InfoResultatData InfoResultatDataElement { get; set; }
@@ -77,6 +94,32 @@ namespace ChronoJstk.Resultats
             {
                 InfoResultatDataElement.ClubPatineur = value;
                 this.NotifierChangementPropriete("ClubPatineur");
+            }
+        }
+
+        public int RangPatineur
+        {
+            get
+            {
+                return InfoResultatDataElement.RangPatineur;
+            }
+            set
+            {
+                InfoResultatDataElement.RangPatineur = value;
+                this.NotifierChangementPropriete("RangPatineur");
+            }
+        }
+
+        public ObservableCollection<int> RangPossibles
+        {
+            get
+            {
+                return InfoResultatDataElement.RangPossibles;
+            }
+            set
+            {
+                InfoResultatDataElement.RangPossibles = value;
+                this.NotifierChangementPropriete("RangPossibles");
             }
         }
 
@@ -161,11 +204,13 @@ namespace ChronoJstk.Resultats
         }
 
         [DataContract]
-        public class InfoResultatData
+        public class InfoResultatData : INotifyPropertyChanged
         {
             public InfoResultatData()
             {
             }
+
+          
 
             [DataMember(IsRequired = false)]
             public string TempsSauvegarde { get; set; }
@@ -179,6 +224,88 @@ namespace ChronoJstk.Resultats
 
             [DataMember(IsRequired = false)]
             public string TempsPatineur { get; set; }
+
+            private int _RangPatineur = int.MinValue;
+            [DataMember(IsRequired = false)]
+            public int RangPatineur
+            {
+                get
+                { return this._RangPatineur; }
+                set
+                { 
+                    int ancien = this._RangPatineur;
+                    this._RangPatineur = value;
+                    if (ancien != int.MinValue && value != ancien)
+                    {
+                        InfoResultatData ancient = this.RangIRP[ancien];
+                        InfoResultatData Deplace = this.RangIRP[ancien];
+                        //string previous = string.Empty;
+                        if (ancien < this._RangPatineur) {
+                            
+                            for (int i = ancien ; i < this._RangPatineur; i++)
+                            {
+                                this.RangIRP[i] = this.RangIRP[i + 1];
+                                this.RangIRP[i]._RangPatineur = i;
+                                if (i == ancien) {
+                                  //  previous = this.RangIRP[i].TempsPatineur;
+                                  //this.RangIRP[i].TempsPatineur = ancient.TempsPatineur;
+                                    this.RangIRP[i].TempsPatineur = RangTemps[i];    
+                                }
+                                else
+                                {
+                                    //this.RangIRP[i].TempsPatineur = previous;
+                                    this.RangIRP[i].TempsPatineur = RangTemps[i];
+                                }
+
+                                //if (this.RangIRP[i].PropertyChanged != null) { this.RangIRP[i].PropertyChanged(this, new PropertyChangedEventArgs("RangPatineur")); }
+                                //if (this.RangIRP[i].PropertyChanged != null) { this.RangIRP[i].PropertyChanged(this, new PropertyChangedEventArgs("Temps")); }
+                                if (this.RangIRP[i]._RangPatineur == Deplace.RangPatineur)
+                                {
+                                    break;
+                                }
+                            }
+                            this.RangIRP[this._RangPatineur] = Deplace;
+                            this.TempsPatineur = this.RangTemps[this._RangPatineur];
+                            //if (this.PropertyChanged != null) { this.PropertyChanged(this, new PropertyChangedEventArgs("TempsPatineur")); }
+                        }
+                        if (ancien > this._RangPatineur)
+                        {
+                            for (int i = ancien ; i > this._RangPatineur; i--)
+                            {
+                                this.RangIRP[i] = this.RangIRP[i - 1];
+                                this.RangIRP[i]._RangPatineur = i;
+                                this.RangIRP[i].TempsPatineur = this.RangTemps[this.RangIRP[i]._RangPatineur];
+                                //if (this.RangIRP[i].PropertyChanged != null) { this.RangIRP[i].PropertyChanged(this, new PropertyChangedEventArgs("RangPatineur")); }
+                                //if (this.RangIRP[i].PropertyChanged != null) { this.RangIRP[i].PropertyChanged(this, new PropertyChangedEventArgs("Temps")); }
+                            }
+
+                            this.RangIRP[this._RangPatineur] = Deplace;
+                            //this.RangIRP[this._RangPatineur].TempsPatineur = previous;
+                            this.RangIRP[this._RangPatineur].TempsPatineur = this.RangTemps[this._RangPatineur];
+                            //if (this.RangIRP[this._RangPatineur].PropertyChanged != null) { this.RangIRP[this._RangPatineur].PropertyChanged(this, new PropertyChangedEventArgs("Temps")); }
+                        }
+                    }
+
+                    //if (this.PropertyChanged != null) { this.PropertyChanged(this, new PropertyChangedEventArgs("RangPatineur")); }
+
+                    foreach (InfoResultatData o in this.RangIRP.Values)
+                    {
+                        o.PropertyChanged(o, new PropertyChangedEventArgs("TempsPatineur"));
+                        o.PropertyChanged(o, new PropertyChangedEventArgs("RangPatineur"));
+                    }
+                }
+            }
+
+           
+            public ObservableCollection<int> RangPossibles { get; set; }
+
+            private static Dictionary<int, string> _rangTemps = new Dictionary<int, string>();
+            private static Dictionary<int, InfoResultatData> _rangIRP = new Dictionary<int, InfoResultatData>();
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            public  Dictionary<int, string> RangTemps { get { return _rangTemps; } }
+            public Dictionary<int, InfoResultatData> RangIRP { get { return _rangIRP; } }
 
             [DataMember(IsRequired = false)]
             public ObservableCollection<EvenementPatineur> Evenements { get; set; }

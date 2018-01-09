@@ -58,11 +58,19 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>..\Solution Items\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DirectInput">
+      <HintPath>..\Solution Items\SharpDX.DirectInput.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -116,6 +124,9 @@
     <Compile Include="..\ChronoStick-Input\Model\TypeMessageConfig.cs">
       <Link>ChronistickInput\TypeMessageConfig.cs</Link>
     </Compile>
+    <Compile Include="Extensions\WindowExt.cs" />
+    <Compile Include="Input\DirectChronostickInputMgr.cs" />
+    <Compile Include="Input\JoyStickManager.cs" />
     <Compile Include="ResultatCompetitionMgr.cs" />
     <Compile Include="Chat\ChatWithServer.cs" />
     <Compile Include="Chat\ChatWithServer2.cs" />
@@ -288,6 +299,7 @@
       <Name>ResultatPourWeb</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

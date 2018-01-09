@@ -21,7 +21,21 @@ namespace ChronoJstk.ChronistickInput
     public delegate void DelDepartEventHandler(object sender, ChronstickInputEventArgs e);
     public delegate void DelTourEventHandler(object sender, ChronstickInputEventArgs e);
 
-    class ChronistickInputMgr
+    public interface IChronistickInputMgr
+    {
+
+        event EventHandler ErreurConnexion;
+        event DelDepartEventHandler DepartEventHandler;
+        event DelTourEventHandler TourEventHandler;
+        void ConfigurerNbPatineur(int nbPat);
+        void ConfigurerDelaisPing(int delais);
+        void ConfigurerDelaisTour(int delais);
+        void ConfigurerDelaisDepart(int delais);
+        void Reconnecter();
+        void Terminer(int delais);
+    }
+
+    class ChronistickInputMgr : IChronistickInputMgr
     {
         bool enTerminaison = false;
         // A delegate type for hooking up change notifications.
@@ -30,6 +44,8 @@ namespace ChronoJstk.ChronistickInput
         // elements of the list change.
         public event DelDepartEventHandler DepartEventHandler ;
         public event DelTourEventHandler TourEventHandler;
+        public event EventHandler ErreurConnexion;
+
         private int nbPat = 5;
 
         private Socket sock;
@@ -218,6 +234,17 @@ namespace ChronoJstk.ChronistickInput
             {
                 // Ne rien faire si chronostick-input n'est pas à l'écoute
             }
+        }
+
+        public void Reconnecter()
+        {
+            MessageConfig message = new MessageConfig();
+            message.TypeMessage = TypeMessageConfig.Reconnecter;
+            message.ValeurMessage = 0;
+            MemoryStream stream1 = new MemoryStream();
+            ser.WriteObject(stream1, message);
+            byte[] b = stream1.GetBuffer();
+            sock.SendTo(b, endPoint);
         }
     }
 }

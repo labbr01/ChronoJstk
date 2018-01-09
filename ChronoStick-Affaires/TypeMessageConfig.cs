@@ -13,6 +13,7 @@ namespace ChronoStick_Affaires
         DelaisPing = 2,
         DelaisTourPatineur = 3,
         DelaisDepart = 4,
-        Terminer = 5
+        Terminer = 5,
+        Reconnecter = 6
     }
 }

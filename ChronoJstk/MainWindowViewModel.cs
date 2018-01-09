@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using ChronoJstk.Extensions;
 using System.Windows.Threading;
 
 //2017-09-26 - Ordre du jour AG Spécial.docx
@@ -29,7 +30,7 @@ namespace ChronoJstk
         //private Dictionary<string, List<PatineurVague>> _lpv = null;
         private Dictionary<Chat.ChronoSignalR.TypeMessage, string> logMessages = new Dictionary<Chat.ChronoSignalR.TypeMessage, string>();
         Chat.ChronoSignalR ccw = null;
-        private ChronistickInput.ChronistickInputMgr mgrInput;
+        private ChronistickInput.IChronistickInputMgr mgrInput;
         private CompteTour ct = null;
         Dispatcher Dispatcher = null;
         private Action EnleverEnfant;
@@ -44,7 +45,8 @@ namespace ChronoJstk
             this.series = new ObservableCollection<int>();
             this.vagues = new ObservableCollection<string>();
 
-            mgrInput = new ChronistickInput.ChronistickInputMgr();
+            // mgrInput = new ChronistickInput.ChronistickInputMgr();
+            mgrInput = new Input.DirectChronostickInputMgr();
             mgrInput.DepartEventHandler += MgrInput_DepartEventHandler;
             mgrInput.TourEventHandler += MgrInput_TourEventHandler;
             this.SauvegardeVisibility = Visibility.Hidden;
@@ -805,11 +807,16 @@ namespace ChronoJstk
 
                 Resultats.Resultats res = new Resultats.Resultats();
 
-         
-            foreach (PatineurCourse pc in this.patcs.Where(pc => pc.Serie == pcg.Serie && pc.Bloc == pcg.Bloc && pc.Vague == pcg.Vague).OrderBy(zz => zz.Casque))
+                IEnumerable<PatineurCourse> lpc = this.patcs.Where(pc => pc.Serie == pcg.Serie && pc.Bloc == pcg.Bloc && pc.Vague == pcg.Vague).OrderBy(zz => zz.Casque);
+                int nbPatVague = lpc.Count();
+            foreach (PatineurCourse pc in lpc)
             {
-                    res.AjouterResultatPatineur(pc,null);
+                    res.AjouterResultatPatineur(pc,null, nbPatVague);
             }
+
+                // Calculer le rang du patineur dans la liste
+                res.CalculerRang();
+
                 bool? rep = res.ShowDialog();
                 nomFich = System.IO.Path.Combine(ParamCommuns.Instance.RepCL, pcg.Serie + pcg.Vague + ".cl");
 
@@ -855,6 +862,7 @@ namespace ChronoJstk
             if (this.ct == null)
             {
                 this.ct = new CompteTour();
+                this.ct.MaximizeToSecondaryMonitor();
             }
 
             ProgrammeCourse pcc = this.Pcg.SingleOrDefault(z => z.Bloc == this._blocSel && z.Serie == this._serieSel);
@@ -880,6 +888,11 @@ namespace ChronoJstk
 
         public void Interrompre_Click(object sender, RoutedEventArgs e)
         {
+            if (this.ct != null)
+            {
+                this.nbTourInt = System.Convert.ToInt32(this.nbTourTxt);
+                this.ct.Initialiser(nbTourInt);
+            }
             DateTime actuel = DateTime.Now;
             foreach (PatineurCourse pc in this.patcs)
             {

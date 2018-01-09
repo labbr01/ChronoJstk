@@ -4,11 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:tk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              xmlns:local="clr-namespace:ChronoJstk.Resultats"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="150">
+             d:DesignHeight="180" d:DesignWidth="150">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
@@ -19,7 +21,8 @@
         <TextBlock Grid.Row="1" x:Name="Casque" Text="{Binding CasquePatineur}"></TextBlock>
         <TextBlock Grid.Row="2" x:Name="Club" Text="{Binding ClubPatineur}"></TextBlock>
         <!--<TextBox Grid.Row="3" x:Name="Temps"  Text="{Binding TempsPatineur, Mode=TwoWay}"></TextBox>-->
-        <tk:MaskedTextBox Grid.Row="3" x:Name="Temps" Text="{Binding TempsPatineur, Mode=TwoWay}" Mask="00:00.00" ></tk:MaskedTextBox>
-        <ComboBox  Grid.Row="4" x:Name="CbxEvenements" ItemsSource="{Binding Evenements}" SelectedItem="{Binding EvenementSel, Mode=TwoWay}" DisplayMemberPath="TempsEtTours"/>
+        <ComboBox Grid.Row="3" x:Name="Rang"  SelectedItem="{Binding RangPatineur, Mode=TwoWay, diag:PresentationTraceSources.TraceLevel=High}" ItemsSource="{Binding RangPossibles, Mode=TwoWay,diag:PresentationTraceSources.TraceLevel=High}"></ComboBox>
+        <tk:MaskedTextBox Grid.Row="4" x:Name="Temps" Text="{Binding TempsPatineur, Mode=TwoWay}" Mask="00:00.00" ></tk:MaskedTextBox>
+        <ComboBox  Grid.Row="5" x:Name="CbxEvenements" ItemsSource="{Binding Evenements}" SelectedItem="{Binding EvenementSel, Mode=TwoWay}" DisplayMemberPath="TempsEtTours"/>
     </Grid>
 </UserControl>

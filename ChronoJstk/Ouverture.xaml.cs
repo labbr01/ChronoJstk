@@ -491,16 +491,35 @@ namespace ChronoJstk
 
         private void cbxWebChrono_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.cbxWebResultat.SelectedIndex == 0)
+            object o = e.AddedItems;
+            object[] oo = o as object[];
+            ComboBoxItem cbi = oo[0] as ComboBoxItem;
+            if (cbi != null)
             {
-                this.softwareKey.SetValue("WebChrono", false);
-                ParamCommuns.Instance.WebChrono = false;
+                string x = cbi.Content as string;
+                if (x.ToLower() == "non")
+                {
+                    this.softwareKey.SetValue("WebChrono", false);
+                    ParamCommuns.Instance.WebChrono = false;
+                }
+                else
+                {
+                    this.softwareKey.SetValue("WebChrono", true);
+                    ParamCommuns.Instance.WebChrono = true;
+                }
             }
-            else
-            {
-                this.softwareKey.SetValue("WebChrono", true);
-                ParamCommuns.Instance.WebChrono = true;
-            }
+            
+          
+            //if (this.cbxWebResultat.SelectedIndex == 0)
+            //{
+            //    this.softwareKey.SetValue("WebChrono", false);
+            //    ParamCommuns.Instance.WebChrono = false;
+            //}
+            //else
+            //{
+            //    this.softwareKey.SetValue("WebChrono", true);
+            //    ParamCommuns.Instance.WebChrono = true;
+            //}
         }
 
         private void MotPasse_PasswordChanged(object sender, RoutedEventArgs e)

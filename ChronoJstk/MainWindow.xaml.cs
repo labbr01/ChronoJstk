@@ -54,7 +54,11 @@ namespace ChronoJstk
                     string nomCompe = ParamCommuns.Instance.NomCompetition;
                     int noCompt = ParamCommuns.Instance.NoCompetition;
                     this.mwvm.OuvrirCompetition(nomCompe, noCompt );
-                    this.mwvm.DiffusionWeb();
+                    if (ParamCommuns.Instance.WebChrono)
+                    {
+                        this.mwvm.DiffusionWeb();
+                    }
+
                     if (ParamCommuns.Instance.WebResultat)
                     {
                         List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
@@ -67,7 +71,7 @@ namespace ChronoJstk
                 }
             }
         }
-        
+
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             this.mwvm.MainWindow_Closed(sender, e);
@@ -144,6 +148,23 @@ namespace ChronoJstk
         private void Joindre_Click(object sender, RoutedEventArgs e)
         {
             this.mwvm.Joindre_Click(sender, e);            
+        }
+
+        private void PublierResultat_Click(object sender, RoutedEventArgs e)
+        {
+            if (ParamCommuns.Instance.WebResultat)
+            {
+                List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
+                if (res != null && res.Count > 0)
+                {
+                    this.mwvm.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
+                }
+            }
+        }
+
+        private void RelireGroupeVague_Click(object sender, RoutedEventArgs e)
+        {
+            ProgrammeCourseMgr.Instance.RafraichirCompe();
         }
 
         //private void Bw_DoWork(object sender, DoWorkEventArgs e)

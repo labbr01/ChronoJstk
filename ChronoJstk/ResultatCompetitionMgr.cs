@@ -81,7 +81,8 @@ namespace ChronoJstk
 
         public List<string> ObtenirResultatCompetition()
         {
-            using (var db = new DBPatinVitesse())
+            string connectString = string.Format(@"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = {0}; User Id = admin; Password =; ", ParamCommuns.Instance.NomFichierPat);
+            using (var db = new DBPatinVitesse(connectString))
             {
                 string ftpUser = ParamCommuns.Instance.UsagerFTP;
                 string ftpPasse = ParamCommuns.Instance.MotPasse;

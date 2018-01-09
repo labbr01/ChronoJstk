@@ -35,19 +35,36 @@ namespace ChronoJstk.Resultats
             this.Cancel.Visibility = Visibility.Hidden;
         }
 
-        public void AjouterResultatPatineur(PatineurCourse patc, InfoResultatData irpx)
+        public void CalculerRang()
+        {
+            int i = 1;
+            foreach (InfoResultatData ird in LInfoResultatPatineur.OrderBy(z => z.EvenementSel.TempsElapse))
+            {
+                // Index 0 doit avoir le rang 1!
+                ird.RangPatineur = ird.RangPossibles.IndexOf(i) + 1;
+                ird.RangTemps[ird.RangPatineur] = ird.TempsPatineur;
+                ird.RangIRP[ird.RangPatineur] = ird;
+                i++;
+            }
+
+         
+        }
+
+        public void AjouterResultatPatineur(PatineurCourse patc, InfoResultatData irpx, int nbPatVag)
         {
             this.ResultatObj.Titre = (string.Format("Heure {2}: Série {0}, Vague {1} : {0}{1}.cl", patc.Serie, patc.Vague, DateTime.Now));
             this.Title = this.ResultatObj.Titre;
             InfoResultatPatineur irp = null;
             if (irpx != null)
             {
-                irp = new InfoResultatPatineur(patc);
+                irp = new InfoResultatPatineur(patc, nbPatVag);
                 irp.InfoResultatDataElement = irpx;
+                irp.PropertyChanged += Irp_PropertyChanged;
             }
             else
             {
-                irp = new InfoResultatPatineur(patc);                
+                irp = new InfoResultatPatineur(patc, nbPatVag);
+                irp.PropertyChanged += Irp_PropertyChanged;
             }
              
             LInfoResultatPatineur.Add(irp.InfoResultatDataElement);
@@ -62,6 +79,11 @@ namespace ChronoJstk.Resultats
             //}
         }
 
+        private void Irp_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
         public ResultatData ResultatObj { get; set; }
 
         public void ResultatInit(ResultatData r)
@@ -71,11 +93,16 @@ namespace ChronoJstk.Resultats
             LInfoResultatPatineur.Clear();
             this.ResultatObj = r;
             int i = 0;
+            int npPatVag = this.ResultatObj.LPatCourse.Count();
             foreach (PatineurCourse pc in this.ResultatObj.LPatCourse)
             {
-                this.AjouterResultatPatineur(pc, oldList[i]);
+                this.AjouterResultatPatineur(pc, oldList[i], npPatVag);
                 i += 1;
             }
+
+            // Calculer le rang du patineur dans la liste
+            this.CalculerRang();
+
 
             this.Cancel.Visibility = Visibility.Visible;
         }

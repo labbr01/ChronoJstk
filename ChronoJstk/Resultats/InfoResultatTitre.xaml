@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ChronoJstk.Resultats"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="80">
+             d:DesignHeight="180" d:DesignWidth="80">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
@@ -17,7 +18,8 @@
         <Label Grid.Row="0" x:Name="Patineur">Patineur</Label>
         <Label Grid.Row="1" x:Name="Casque">Casque</Label>
         <Label Grid.Row="2" x:Name="Club">Club</Label>
-        <Label Grid.Row="3" x:Name="Temps">Temps</Label>
-        <Label Grid.Row="4" x:Name="Evenement">Évènements</Label>
+        <Label Grid.Row="3" x:Name="Rang">Rang</Label>
+        <Label Grid.Row="4" x:Name="Temps">Temps</Label>
+        <Label Grid.Row="5" x:Name="Evenement">Évènements</Label>
     </Grid>
 </UserControl>

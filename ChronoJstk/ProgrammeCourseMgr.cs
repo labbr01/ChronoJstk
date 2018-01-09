@@ -61,14 +61,16 @@ namespace ChronoJstk
                     {
                         nom = dialog.ListCompe.First();
                     }
-                    else {
+                    else
+                    {
                         nom = dialog.CompeSele;
                     }
                     NomCompe = nom;
                     noCompe = db.Competition.SingleOrDefault(z => z.Lieu == nom).NoCompetition;
                     noCompeInterne = noCompe;
                 }
-                else {
+                else
+                {
                     ParamCommuns.Instance.Programmes = null;
                     ParamCommuns.Instance.DescVagues = null;
                     return;
@@ -84,7 +86,8 @@ namespace ChronoJstk
             string nomCompe = ParamCommuns.Instance.NomCompetition;
             int noCompt = ParamCommuns.Instance.NoCompetition;
             string connectString = string.Format(@"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = {0}; User Id = admin; Password =; ", nomFichier);
-            try {
+            try
+            {
                 using (DBPatinVitesse db = new DBPatinVitesse(connectString))
                 {
                     DetailCompe(db, noCompt);
@@ -159,7 +162,7 @@ namespace ChronoJstk
                     Byte[] b = System.Text.Encoding.UTF8.GetBytes(json);
                     var serializer = new DataContractJsonSerializer(typeof(List<EpreuveTrace>));
                     MemoryStream ms = new MemoryStream(b);
-                    _traces = serializer.ReadObject(ms) as List<EpreuveTrace> ;
+                    _traces = serializer.ReadObject(ms) as List<EpreuveTrace>;
                 }
 
                 return _traces;
@@ -169,115 +172,222 @@ namespace ChronoJstk
 
 
         public void DetailCompe(DBPatinVitesse db, int noCompeInterne)
-    {
-        var programmes = new ObservableCollection<ProgrammeCourse>();
-        var descVagues = new Dictionary<string, List<PatineurVague>>();
+        {
+            var programmes = new ObservableCollection<ProgrammeCourse>();
+            var descVagues = new Dictionary<string, List<PatineurVague>>();
 
-        // Sélection de tous les temps des patineurs de la compétition
-        var laTotal = from patvag in db.PatVagues
-                      join patcmp in db.PatineurCompe on patvag.NoPatCompe equals patcmp.NoPatCompe
-                      join patineur in db.Patineur on patcmp.NoPatineur equals patineur.NoPatineur
-                      join club in db.Club on patineur.NoClub equals club.NoClub
-                      join vag in db.Vagues on patvag.CleTVagues equals vag.CleTVagues
-                      join progcrs in db.ProgCourses on vag.CleDistancesCompe equals progcrs.CleDistancesCompe
-                      join diststd in db.DistanceStandards on progcrs.NoDistance equals diststd.NoDistance
-                      join cmnt in db.Commentaire on patvag.Juge equals cmnt.Code
-                      where patvag.NoPatCompe == patcmp.NoPatCompe
-                      && patcmp.NoPatineur == patineur.NoPatineur
-                      && patineur.NoClub == club.NoClub
-                      && patvag.CleTVagues == vag.CleTVagues
-                      && vag.CleDistancesCompe == progcrs.CleDistancesCompe
-                      && progcrs.NoDistance == diststd.NoDistance
-                      && patcmp.NoCompetition == noCompeInterne
-                      && progcrs.NoCompetition == noCompeInterne
-                      select new ResultatObj()
-                      {
-                          NoPatineur = patineur.NoPatineur,
-                          Nom = patineur.Nom + "," + patineur.Prenom,
-                          Club = club.NomClub,
-                          NoCasque = patvag.NoCasque,
-                          Temps = patvag.Temps,
-                          Point = patvag.Point,
-                          Rang = patvag.Rang,
-                          Code = cmnt.CodeAction.Replace("NIL", string.Empty),
-                          NoVague = vag.NoVague,
-                          Epreuve = vag.Qual_ou_Fin,
-                          Groupe = patcmp.Groupe,
-                          LongueurEpreuve = diststd.LongueurEpreuve,
-                          Distance = diststd.Distance,
-                          NoBloc = progcrs.NoBloc,
-                          Sexe = patineur.Sexe
-                      };
+            // Sélection de tous les temps des patineurs de la compétition
+            var laTotal = from patvag in db.PatVagues
+                          join patcmp in db.PatineurCompe on patvag.NoPatCompe equals patcmp.NoPatCompe
+                          join patineur in db.Patineur on patcmp.NoPatineur equals patineur.NoPatineur
+                          join club in db.Club on patineur.NoClub equals club.NoClub
+                          join vag in db.Vagues on patvag.CleTVagues equals vag.CleTVagues
+                          join progcrs in db.ProgCourses on vag.CleDistancesCompe equals progcrs.CleDistancesCompe
+                          join diststd in db.DistanceStandards on progcrs.NoDistance equals diststd.NoDistance
+                          join cmnt in db.Commentaire on patvag.Juge equals cmnt.Code
+                          where patvag.NoPatCompe == patcmp.NoPatCompe
+                          && patcmp.NoPatineur == patineur.NoPatineur
+                          && patineur.NoClub == club.NoClub
+                          && patvag.CleTVagues == vag.CleTVagues
+                          && vag.CleDistancesCompe == progcrs.CleDistancesCompe
+                          && progcrs.NoDistance == diststd.NoDistance
+                          && patcmp.NoCompetition == noCompeInterne
+                          && progcrs.NoCompetition == noCompeInterne
+                          select new ResultatObj()
+                          {
+                              NoPatineur = patineur.NoPatineur,
+                              Nom = patineur.Nom + "," + patineur.Prenom,
+                              Club = club.NomClub,
+                              NoCasque = patvag.NoCasque,
+                              Temps = patvag.Temps,
+                              Point = patvag.Point,
+                              Rang = patvag.Rang,
+                              Code = cmnt.CodeAction.Replace("NIL", string.Empty),
+                              NoVague = vag.NoVague,
+                              Epreuve = vag.Qual_ou_Fin,
+                              Groupe = patcmp.Groupe,
+                              LongueurEpreuve = diststd.LongueurEpreuve,
+                              Distance = diststd.Distance,
+                              NoBloc = progcrs.NoBloc,
+                              Sexe = patineur.Sexe
+                          };
 
-        var nbp = laTotal.Count();
-
-        bool m = bool.Parse(ConfigurationManager.AppSettings["Mixte"]);
-        TrieResultat comparer = new TrieResultat(m);
-        var laTotale1 = laTotal.ToList().OrderBy(z => z, comparer).ToList();
-        nbp = laTotale1.Count();
-        var laTotale2 = laTotale1.ToList();
-        nbp = laTotale2.Count();
-
-        var b = laTotale2.Select(z => new { z.Epreuve, z.Groupe, z.LongueurEpreuve, z.NoBloc, z.ChiffreVague, z.Distance }).Distinct().ToList();
-        foreach (var z in b.OrderBy(z => z.NoBloc).ThenBy(z => z.ChiffreVague))
-        {                
-            ProgrammeCourse pc = new ProgrammeCourse();
-                EpreuveTrace t = Traces.SingleOrDefault(et => et.Epreuve == z.Distance);
-                if (t == null)
-                {
-                    t = new EpreuveTrace();
-                    t.Epreuve = z.Distance;
-                    t.Trace = 100;
-                    MessageBox.Show(string.Format("La distance {0} n'est pas configurée, on présume un tracé de 100 mètres", z.Distance));
-                    Traces.Add(t);
-                }
-            //pc.Type == z.Epreuve;
-            pc.Bloc = z.NoBloc;
-            pc.Epreuve = z.LongueurEpreuve.ToString();
-            pc.Trace = t.Trace;
-            pc.NbTour = z.LongueurEpreuve / pc.Trace;
-            var x = laTotale2.Where(k => k.NoBloc == z.NoBloc && k.Epreuve == z.Epreuve && k.Groupe == z.Groupe && k.LongueurEpreuve == z.LongueurEpreuve);
-            int nb = x.Count();
-            string min = x.Min(k => k.LettreVague);
-            string max = x.Max(k => k.LettreVague);
-            ResultatObj r = x.First();
-            string chiffreSerie = r.NoVague.Replace(r.LettreVague, string.Empty);
-            int serie = System.Convert.ToInt32(chiffreSerie);
-            pc.Serie = serie;
-            pc.LVagues = x.Select(pz => pz.LettreVague).Distinct().ToList();
-            pc.De = min;
-            pc.A = max;
-            pc.TypeCourse = z.Epreuve;
-            programmes.Add(pc);
-
-            foreach (var v in x)
+            var nbp = laTotal.Count();
+            System.Diagnostics.Debug.WriteLine(" t.ChiffreVague, t.Groupe, t.NoBloc, t.NoPatineur, t.Nom, t.LettreVague, t.NoCasque, t.ChiffreVague, t.texe");
+            foreach (var t in laTotal)
             {
-                List<PatineurVague> patVags = null;
-                if (descVagues.ContainsKey(v.ChiffreVague))
-                {
-                    patVags = descVagues[v.ChiffreVague];
-                }
-                else
-                {
-                    patVags = new List<PatineurVague>();
-                    descVagues.Add(v.ChiffreVague, patVags);
-                }
-                PatineurVague pv = new PatineurVague();
-                pv.Epreuve = v.LongueurEpreuve;
-                pv.Groupe = v.Groupe;
-                pv.Casque = v.NoCasque;
-                pv.Patineurs = v.Nom;
-                pv.Club = v.Club;
-                pv.Rang = v.Rang;
-                pv.Temps = v.Temps.ToString();
-                pv.Points = v.Point;
-                pv.Commentaire = string.Empty;
-                pv.Vague = v.LettreVague;
-                //pv.Date;                                                                             
-                patVags.Add(pv);
-            }           
-        }
+                System.Diagnostics.Debug.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", t.ChiffreVague, t.Groupe, t.NoBloc, t.NoPatineur, t.Nom, t.LettreVague, t.NoCasque, t.ChiffreVague, t.Sexe));
+            }
 
+
+            bool m = ParamCommuns.Instance.GroupesMixtes; // bool.Parse(ConfigurationManager.AppSettings["Mixte"]);
+            TrieResultat comparer = new TrieResultat(m);
+            var laTotale1 = laTotal.ToList().OrderBy(z => z, comparer).ToList();
+            nbp = laTotale1.Count();
+            System.Diagnostics.Debug.WriteLine("--------");
+
+            System.Diagnostics.Debug.WriteLine(" t.ChiffreVague, t.Groupe, t.NoBloc, t.NoPatineur, t.Nom, t.LettreVague, t.NoCasque, t.ChiffreVague, t.texe");
+            foreach (var t in laTotale1)
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", t.ChiffreVague, t.Groupe, t.NoBloc, t.NoPatineur, t.Nom, t.LettreVague, t.NoCasque, t.ChiffreVague, t.Sexe));
+            }
+
+            var laTotale2 = laTotale1.ToList();
+            nbp = laTotale2.Count();
+
+            System.Diagnostics.Debug.WriteLine("--------");
+
+            System.Diagnostics.Debug.WriteLine(" t.ChiffreVague, t.Groupe, t.NoBloc, t.NoPatineur, t.Nom, t.LettreVague, t.NoCasque, t.ChiffreVague, t.texe");
+            foreach (var t in laTotale2)
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", t.ChiffreVague, t.Groupe, t.NoBloc, t.NoPatineur, t.Nom, t.LettreVague, t.NoCasque, t.ChiffreVague, t.Sexe));
+            }
+
+            if (m)
+            {
+                // course mixte, on se préocupe pas du sexe
+                var b = laTotale2.Select(z => new { z.Epreuve, z.Groupe, z.LongueurEpreuve, z.NoBloc, z.ChiffreVague, z.Distance }).Distinct().ToList();
+                System.Diagnostics.Debug.WriteLine("--------");
+                System.Diagnostics.Debug.WriteLine(" t.ChiffreVague, t.Groupe, t.NoBloc");
+                foreach (var t in b)
+                {
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0},{1},{2}", t.ChiffreVague, t.Groupe, t.NoBloc));
+                }
+                foreach (var z in b.OrderBy(z => z.NoBloc).ThenBy(z => z.ChiffreVague))
+                {
+                    System.Diagnostics.Debug.WriteLine("--------");
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0},{1},{2}", z.ChiffreVague, z.Groupe, z.NoBloc));
+                    ProgrammeCourse pc = new ProgrammeCourse();
+                    EpreuveTrace t = Traces.SingleOrDefault(et => et.Epreuve == z.Distance);
+                    if (t == null)
+                    {
+                        t = new EpreuveTrace();
+                        t.Epreuve = z.Distance;
+                        t.Trace = 100;
+                        MessageBox.Show(string.Format("La distance {0} n'est pas configurée, on présume un tracé de 100 mètres", z.Distance));
+                        Traces.Add(t);
+                    }
+                    //pc.Type == z.Epreuve;
+                    pc.Bloc = z.NoBloc;
+                    pc.Epreuve = z.LongueurEpreuve.ToString();
+                    pc.Trace = t.Trace;
+
+                    pc.NbTour = z.LongueurEpreuve / pc.Trace;
+                    var x = laTotale2.Where(k => k.NoBloc == z.NoBloc && k.Epreuve == z.Epreuve && k.Groupe == z.Groupe && k.LongueurEpreuve == z.LongueurEpreuve);
+                    int nb = x.Count();
+                    string min = x.Min(k => k.LettreVague);
+                    string max = x.Max(k => k.LettreVague);
+                    ResultatObj r = x.First();
+                    string chiffreSerie = r.NoVague.Replace(r.LettreVague, string.Empty);
+                    int serie = System.Convert.ToInt32(chiffreSerie);
+                    pc.Serie = serie;
+                    pc.LVagues = x.Select(pz => pz.LettreVague).Distinct().ToList();
+                    pc.De = min;
+                    pc.A = max;
+                    pc.TypeCourse = z.Epreuve;
+                    programmes.Add(pc);
+
+                    foreach (var v in x)
+                    {
+                        List<PatineurVague> patVags = null;
+                        if (descVagues.ContainsKey(v.ChiffreVague))
+                        {
+                            patVags = descVagues[v.ChiffreVague];
+                        }
+                        else
+                        {
+                            patVags = new List<PatineurVague>();
+                            descVagues.Add(v.ChiffreVague, patVags);
+                        }
+                        PatineurVague pv = new PatineurVague();
+                        pv.Epreuve = v.LongueurEpreuve;
+                        pv.Groupe = v.Groupe;
+                        pv.Casque = v.NoCasque;
+                        pv.Patineurs = v.Nom;
+                        pv.Club = v.Club;
+                        pv.Rang = v.Rang;
+                        pv.Temps = v.Temps.ToString();
+                        pv.Points = v.Point;
+                        pv.Commentaire = string.Empty;
+                        pv.Vague = v.LettreVague;
+                        //pv.Date;                                                                             
+                        patVags.Add(pv);
+                    }
+                }
+            }
+            else
+            {
+                // Non mixte, on se préocupe du sexe!
+                var b = laTotale2.Select(z => new { z.Epreuve, z.Groupe, z.LongueurEpreuve, z.NoBloc, z.ChiffreVague, z.Distance, z.Sexe }).Distinct().ToList();
+                System.Diagnostics.Debug.WriteLine("--------");
+                System.Diagnostics.Debug.WriteLine(" t.ChiffreVague, t.Groupe, t.NoBloc, t.Sexe");
+                foreach (var t in b)
+                {
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0},{1},{2},{3}", t.ChiffreVague, t.Groupe, t.NoBloc, t.Sexe));
+                }
+                foreach (var z in b.OrderBy(z => z.NoBloc).ThenBy(z => z.ChiffreVague))
+                {
+                    System.Diagnostics.Debug.WriteLine("--------");
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0},{1},{2},{3}", z.ChiffreVague, z.Groupe, z.NoBloc, z.Sexe));
+                    ProgrammeCourse pc = new ProgrammeCourse();
+                    EpreuveTrace t = Traces.SingleOrDefault(et => et.Epreuve == z.Distance);
+                    if (t == null)
+                    {
+                        t = new EpreuveTrace();
+                        t.Epreuve = z.Distance;
+                        t.Trace = 100;
+                        MessageBox.Show(string.Format("La distance {0} n'est pas configurée, on présume un tracé de 100 mètres", z.Distance));
+                        Traces.Add(t);
+                    }
+                    //pc.Type == z.Epreuve;
+                    pc.Bloc = z.NoBloc;
+                    pc.Epreuve = z.LongueurEpreuve.ToString();
+                    pc.Trace = t.Trace;
+
+                    pc.NbTour = z.LongueurEpreuve / pc.Trace;
+                    var x = laTotale2.Where(k => k.NoBloc == z.NoBloc && k.Epreuve == z.Epreuve && k.Groupe == z.Groupe && k.LongueurEpreuve == z.LongueurEpreuve && z.Sexe == k.Sexe);
+                    int nb = x.Count();
+                    string min = x.Min(k => k.LettreVague);
+                    string max = x.Max(k => k.LettreVague);
+                    ResultatObj r = x.First();
+                    string chiffreSerie = r.NoVague.Replace(r.LettreVague, string.Empty);
+                    int serie = System.Convert.ToInt32(chiffreSerie);
+                    pc.Serie = serie;
+                    pc.LVagues = x.Select(pz => pz.LettreVague).Distinct().ToList();
+                    pc.De = min;
+                    pc.A = max;
+                    pc.TypeCourse = z.Epreuve;
+                    programmes.Add(pc);
+
+                    foreach (var v in x)
+                    {
+                        List<PatineurVague> patVags = null;
+                        if (descVagues.ContainsKey(v.ChiffreVague))
+                        {
+                            patVags = descVagues[v.ChiffreVague];
+                        }
+                        else
+                        {
+                            patVags = new List<PatineurVague>();
+                            descVagues.Add(v.ChiffreVague, patVags);
+                        }
+                        PatineurVague pv = new PatineurVague();
+                        pv.Epreuve = v.LongueurEpreuve;
+                        pv.Groupe = v.Groupe;
+                        pv.Casque = v.NoCasque;
+                        pv.Patineurs = v.Nom;
+                        pv.Club = v.Club;
+                        pv.Rang = v.Rang;
+                        pv.Temps = v.Temps.ToString();
+                        pv.Points = v.Point;
+                        pv.Commentaire = string.Empty;
+                        pv.Vague = v.LettreVague;
+                        //pv.Date;                                                                             
+                        patVags.Add(pv);
+                    }
+                }
+            }
+                     
             //pc.Serie = z.ChiffreVague;
             if (ParamCommuns.Instance.Programmes == null)
             {
@@ -317,90 +427,90 @@ namespace ChronoJstk
                             ParamCommuns.Instance.Programmes.Remove(pc);
                         }
                     }
-               }
+                }
 
-                    // On ajoute les vraix nouveaux
-                    nouveaux.ForEach(z => ParamCommuns.Instance.Programmes.Add(z));
+                // On ajoute les vraix nouveaux
+                nouveaux.ForEach(z => ParamCommuns.Instance.Programmes.Add(z));
 
-                    Dictionary<string, List<PatineurVague>> descVaguesActuel = new Dictionary<string, List<PatineurVague>>();
-                    foreach (KeyValuePair<string, List<PatineurVague>> kvp in ParamCommuns.Instance.DescVagues)
+                Dictionary<string, List<PatineurVague>> descVaguesActuel = new Dictionary<string, List<PatineurVague>>();
+                foreach (KeyValuePair<string, List<PatineurVague>> kvp in ParamCommuns.Instance.DescVagues)
+                {
+                    descVaguesActuel.Add(kvp.Key, kvp.Value);
+                }
+                Dictionary<string, List<PatineurVague>> descVaguesNouveau = new Dictionary<string, List<PatineurVague>>();
+                foreach (KeyValuePair<string, List<PatineurVague>> kvp in descVagues)
+                {
+                    descVaguesNouveau.Add(kvp.Key, kvp.Value);
+                }
+                foreach (string cle in descVaguesActuel.Keys)
+                {
+                    List<PatineurVague> pvactuels = descVaguesActuel[cle];
+
+                    List<PatineurVague> pvnouveaux = null;
+                    if (descVaguesNouveau.ContainsKey(cle))
                     {
-                        descVaguesActuel.Add(kvp.Key, kvp.Value);
+                        pvnouveaux = descVaguesNouveau[cle];
+                        descVaguesNouveau.Remove(cle);
                     }
-                    Dictionary<string, List<PatineurVague>> descVaguesNouveau = new Dictionary<string, List<PatineurVague>>();
-                    foreach (KeyValuePair<string, List<PatineurVague>> kvp in descVagues)
-                    {
-                        descVaguesNouveau.Add(kvp.Key, kvp.Value);
-                    }
-                    foreach (string cle in descVaguesActuel.Keys)
-                    {
-                        List<PatineurVague> pvactuels = descVaguesActuel[cle];
 
-                        List<PatineurVague> pvnouveaux = null;
-                        if (descVaguesNouveau.ContainsKey(cle))
+                    bool tousPareil = true;
+                    if (pvnouveaux != null && pvactuels.Count() == pvnouveaux.Count())
+                    {
+                        int i = 0;
+                        foreach (PatineurVague pvactuel in pvactuels)
                         {
-                            pvnouveaux = descVaguesNouveau[cle];
-                            descVaguesNouveau.Remove(cle);
-                        }
-
-                        bool tousPareil = true;
-                        if (pvactuels.Count() == pvnouveaux.Count())
-                        {
-                            int i = 0;
-                            foreach (PatineurVague pvactuel in pvactuels)
+                            if (i < pvnouveaux.Count())
                             {
-                                if (i < pvnouveaux.Count())
+                                PatineurVague pvNouveau = pvnouveaux[i];
+                                if (pvactuel.Patineurs == pvNouveau.Patineurs && pvactuel.Club == pvactuel.Club)
                                 {
-                                    PatineurVague pvNouveau = pvnouveaux[i];
-                                    if (pvactuel.Patineurs == pvNouveau.Patineurs && pvactuel.Club == pvactuel.Club)
-                                    {
-                                        pvactuel.Casque = pvNouveau.Casque;
-                                        pvactuel.Commentaire = pvNouveau.Commentaire;
-                                        pvactuel.Date = pvNouveau.Date;
-                                        pvactuel.Epreuve = pvNouveau.Epreuve;
-                                        pvactuel.Groupe = pvNouveau.Groupe;
-                                        pvactuel.Points = pvNouveau.Points;
-                                        pvactuel.Rang = pvNouveau.Rang;
-                                        pvactuel.Temps = pvNouveau.Temps;
-                                        pvactuel.Vague = pvNouveau.Vague;
-                                    }
-                                    else
-                                    {
-                                        tousPareil = false;
-                                        break;
-                                    }
+                                    pvactuel.Casque = pvNouveau.Casque;
+                                    pvactuel.Commentaire = pvNouveau.Commentaire;
+                                    pvactuel.Date = pvNouveau.Date;
+                                    pvactuel.Epreuve = pvNouveau.Epreuve;
+                                    pvactuel.Groupe = pvNouveau.Groupe;
+                                    pvactuel.Points = pvNouveau.Points;
+                                    pvactuel.Rang = pvNouveau.Rang;
+                                    pvactuel.Temps = pvNouveau.Temps;
+                                    pvactuel.Vague = pvNouveau.Vague;
                                 }
-
-
-                                i += 1;
+                                else
+                                {
+                                    tousPareil = false;
+                                    break;
+                                }
                             }
-                        }
-                        else
-                        {
-                            tousPareil = false;
-                        }
 
-                        if (!tousPareil)
-                        {
-                            // Il y a une différence sur les patineurs
-                            // il faut mettre à jour
-                            ParamCommuns.Instance.DescVagues[cle].Clear();
-                            pvnouveaux.ForEach(z => ParamCommuns.Instance.DescVagues[cle].Add(z));
+
+                            i += 1;
                         }
                     }
-
-                    foreach (string cle in descVaguesNouveau.Keys)
+                    else
                     {
-                        ParamCommuns.Instance.DescVagues.Add(cle, descVaguesNouveau[cle]);
+                        tousPareil = false;
+                    }
+
+                    if (!tousPareil)
+                    {
+                        // Il y a une différence sur les patineurs
+                        // il faut mettre à jour
+                        ParamCommuns.Instance.DescVagues[cle].Clear();
+                        pvnouveaux.ForEach(z => ParamCommuns.Instance.DescVagues[cle].Add(z));
                     }
                 }
-            
+
+                foreach (string cle in descVaguesNouveau.Keys)
+                {
+                    ParamCommuns.Instance.DescVagues.Add(cle, descVaguesNouveau[cle]);
+                }
+            }
+
         }
 
     }
     class TrieResultat : IComparer<ResultatObj>
     {
-        private bool mixte = false;
+        private bool mixte = ParamCommuns.Instance.GroupesMixtes;
         public TrieResultat(bool Mixte)
         {
             mixte = Mixte;
@@ -422,8 +532,8 @@ namespace ChronoJstk
             }
             else
             {
-                xc = xo.Groupe.PadLeft(120, '0') + xo.Sexe + xo.NoVague.PadLeft(6, '0') + xo.NoBloc.ToString().PadLeft(3, '0') + xo.Rang.ToString().PadLeft(4, '0') + xo.Point.ToString().PadLeft(8, '0') + xo.NoPatineur.ToString().PadLeft(3, '0');
-                yc = yo.Groupe.PadLeft(120, '0') + yo.Sexe + yo.NoVague.PadLeft(6, '0') + yo.NoBloc.ToString().PadLeft(3, '0') + yo.Rang.ToString().PadLeft(4, '0') + yo.Point.ToString().PadLeft(8, '0') + yo.NoPatineur.ToString().PadLeft(3, '0');
+                xc = xo.Sexe + xo.Groupe.PadLeft(120, '0') + xo.NoVague.PadLeft(6, '0') + xo.NoBloc.ToString().PadLeft(3, '0') + xo.Rang.ToString().PadLeft(4, '0') + xo.Point.ToString().PadLeft(8, '0') + xo.NoPatineur.ToString().PadLeft(3, '0');
+                yc = yo.Sexe + yo.Groupe.PadLeft(120, '0') + yo.NoVague.PadLeft(6, '0') + yo.NoBloc.ToString().PadLeft(3, '0') + yo.Rang.ToString().PadLeft(4, '0') + yo.Point.ToString().PadLeft(8, '0') + yo.NoPatineur.ToString().PadLeft(3, '0');
             }
 
             return string.Compare(xc, yc);

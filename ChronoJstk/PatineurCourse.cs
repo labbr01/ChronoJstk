@@ -157,7 +157,18 @@ namespace ChronoJstk
         {
             if (ParamCommuns.Instance.Etat != ParamCommuns.EtatEnum.EnCourse)
             {
-                MessageBox.Show("La course doit être en cours afin d'enregistrer un temps");
+                if (this.Evenements == null)
+                {
+                    this.Evenements = new ObservableCollection<EvenementPatineur>();
+                }
+
+                EvenementPatineur ep = new EvenementPatineur();
+                ep.Evenement = "NFDTOUR";
+                ep.HeureEvenement = DateTime.Now;
+                ep.TempsElapse = new TimeSpan(23, 59, 59);
+                ep.NbTour = 0;
+                this.Evenements.Add(ep);
+                //MessageBox.Show("La course doit être en cours afin d'enregistrer un temps");
                 return;
             }
 
@@ -166,7 +177,7 @@ namespace ChronoJstk
                 EvenementPatineur ep = new EvenementPatineur();
                 ep.Evenement = "TOUR";
                 ep.HeureEvenement = DateTime.Now;
-                ep.TempsElapse = new TimeSpan(0);
+                ep.TempsElapse = new TimeSpan(23,59,59);
                 ep.NbTour = 0;
                 this.Evenements.Add(ep);
                 this.DernierTemps = ep.DernierTemps();
@@ -183,13 +194,35 @@ namespace ChronoJstk
         {
             if (ParamCommuns.Instance.Etat != ParamCommuns.EtatEnum.EnCourse)
             {
-                MessageBox.Show("La course doit être en cours afin d'enregistrer un temps");
+                if (this.Evenements == null)
+                {
+                    this.Evenements = new ObservableCollection<EvenementPatineur>();
+                }
+
+                EvenementPatineur ep = new EvenementPatineur();
+                ep.Evenement = "NTOUR";
+                ep.HeureEvenement = DateTime.Now;
+                ep.TempsElapse = new TimeSpan(23, 59, 59);
+                ep.NbTour = 0;
+                this.Evenements.Add(ep);
+                //MessageBox.Show("La course doit être en cours afin d'enregistrer un temps");
                 return;
             }
 
             if (this.Evenements == null || this.Evenements.Count == 0)
             {
-                MessageBox.Show("La course doit être en cours afin d'enregistrer un temps");
+                if (this.Evenements == null)
+                {
+                    this.Evenements = new ObservableCollection<EvenementPatineur>();
+                }
+
+                EvenementPatineur ep = new EvenementPatineur();
+                ep.Evenement = "NTOUR";
+                ep.HeureEvenement = DateTime.Now;
+                ep.TempsElapse = new TimeSpan(23, 59, 59);
+                ep.NbTour = 0;
+                this.Evenements.Add(ep);
+                //MessageBox.Show("La course doit être en cours afin d'enregistrer un temps");
                 return;
             }
 
