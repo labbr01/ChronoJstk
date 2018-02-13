@@ -10,7 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="175"></RowDefinition>
             <RowDefinition Height="25"></RowDefinition>
-            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="125"></RowDefinition>
             <RowDefinition Height="25"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="25"></RowDefinition>
@@ -55,11 +55,13 @@
             <ComboBox x:Name="cbxWebChrono" Grid.Row="5" Grid.Column="2" SelectionChanged="cbxWebChrono_SelectionChanged">
                 <ComboBoxItem>Non</ComboBoxItem>
                 <ComboBoxItem>Oui</ComboBoxItem>
+                <ComboBoxItem>Oui BT</ComboBoxItem>
             </ComboBox>
             <Label Grid.Row="6" Grid.Column="1">Diffusion Web résultat</Label>
             <ComboBox x:Name="cbxWebResultat" Grid.Row="6" Grid.Column="2" SelectionChanged="cbxWebResultat_SelectionChanged">
                 <ComboBoxItem>Non</ComboBoxItem>
                 <ComboBoxItem>Oui</ComboBoxItem>
+                <ComboBoxItem>Oui BT</ComboBoxItem>
             </ComboBox>
             <Label Grid.Row="8" Grid.Column="1">Compte Tour</Label>
         </Grid>

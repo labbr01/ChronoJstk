@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChronoJstk.Chat;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -133,14 +134,23 @@ namespace ChronoJstk
                 string msg = "{ \"TypeMessage\" : \"Patineur\", \"NoCasqueWeb\": " + NoCasqueWeb.ToString() + ", \"Casque\": \"" + this.Casque + "\", \"Nom\": \"" + this.Patineur.Patineurs + "\", \"Club\": \"" + this.Patineur.Club + "\", \"Tour\": " + this.NbTour.ToString() + "  , \"Temps\" : \"" + this.DernierTemps + "\", \"DernierTour\" : \"" + this.DernierTour + "\" }";
                 this.ccw.AfficherWeb(this.NoCasqueWeb, msg);
             }
+            if (ParamCommuns.Instance.WebChrono == ParamCommuns.ModeDiffusion.BT)
+            {
+                string msg = "{ \"TypeMessage\" : \"Patineur\", \"NoCasqueWeb\": " + NoCasqueWeb.ToString() + ", \"Casque\": \"" + this.Casque + "\", \"Nom\": \"" + this.Patineur.Patineurs + "\", \"Club\": \"" + this.Patineur.Club + "\", \"Tour\": " + this.NbTour.ToString() + "  , \"Temps\" : \"" + this.DernierTemps + "\", \"DernierTour\" : \"" + this.DernierTour + "\" }";
+                BlueToothMgr.Instance.DiffuserMessageBluetooth(ChronoSignalR.TypeMessage.ChronoCourse, msg);
+            }
         }
 
         public void ResetAffichage()
         {
+            string msg = "{ \"TypeMessage\" : \"Patineur\", \"NoCasqueWeb\": " + NoCasqueWeb.ToString() + ", \"Casque\":\"" + this.Casque + "\", \"Nom\": \"\", \"Club\": \"\", \"Tour\":-1, \"Temps\" : \"\", \"DernierTour\" : \"\" }";
             if (this.ccw != null)
-            {
-                string msg = "{ \"TypeMessage\" : \"Patineur\", \"NoCasqueWeb\": " + NoCasqueWeb.ToString() + ", \"Casque\":\"" + this.Casque + "\", \"Nom\": \"\", \"Club\": \"\", \"Tour\":-1, \"Temps\" : \"\", \"DernierTour\" : \"\" }";
+            {                
                 this.ccw.AfficherWeb(this.NoCasqueWeb, msg);
+            }
+            if (ParamCommuns.Instance.WebChrono == ParamCommuns.ModeDiffusion.BT)
+            {
+                Chat.BlueToothMgr.Instance.DiffuserMessageBluetooth( ChronoSignalR.TypeMessage.ChronoCourse, msg);
             }
         }
 

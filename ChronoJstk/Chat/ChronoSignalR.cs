@@ -34,10 +34,10 @@ namespace ChronoJstk.Chat
             proxy.Invoke("message", type.ToString(), valeur);
         }
 
-        public void AfficherMessageClient(TypeMessage type, string valeur)
-        {
-            proxy.Invoke("messagesClient", type.ToString(), valeur);
-        }
+        //public void AfficherMessageClient(TypeMessage type, string valeur)
+        //{
+        //    proxy.Invoke("messagesClient", type.ToString(), valeur);
+        //}
 
         public enum TypeMessage
         {

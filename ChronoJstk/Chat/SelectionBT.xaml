@@ -1,0 +1,20 @@
+﻿<Window x:Class="ChronoJstk.Chat.SelectionBT"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChronoJstk.Chat"
+        mc:Ignorable="d"
+        Title="SelectionBT" Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ListBox Grid.Row="0" x:Name="Liste" ItemsSource="{Binding Devices, Mode=OneWay}" DisplayMemberPath="DeviceName" ></ListBox>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="Cancel" Click="Cancel_Click">Annuler</Button>
+            <Button x:Name="OK" Click="OK_Click">OK</Button>
+        </StackPanel>
+    </Grid>
+</Window>

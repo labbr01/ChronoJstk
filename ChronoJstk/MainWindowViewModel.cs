@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using ChronoJstk.Chat;
+using ChronoJstk.Extensions;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,10 +13,8 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using ChronoJstk.Extensions;
 using System.Windows.Threading;
 
 //2017-09-26 - Ordre du jour AG Spécial.docx
@@ -23,8 +23,7 @@ namespace ChronoJstk
 {
     [DataContract]
     public partial class MainWindowViewModel : INotifyPropertyChanged
-    {
-        bool diffusionWeb = false;
+    {        
         public event PropertyChangedEventHandler PropertyChanged;
         private System.Windows.Threading.DispatcherTimer dispatcherTimer = null;
         //private Dictionary<string, List<PatineurVague>> _lpv = null;
@@ -54,6 +53,8 @@ namespace ChronoJstk
 
             this.TitreFenetre = "Aucune compétition";
         }
+
+        public Dispatcher DispatcherView { get; set; }
 
         private string _TitreFenetre;
         [DataMember]
@@ -505,6 +506,7 @@ namespace ChronoJstk
             }
         }
 
+        //public async Task<bool> AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage type, string message)
         public void AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage type, string message)
         {
             if (this.logMessages.ContainsKey(type))
@@ -515,9 +517,16 @@ namespace ChronoJstk
             {
                 this.logMessages.Add(type, message);
             }
-            if (this.ccw != null)
+            if (ParamCommuns.Instance.WebChrono == ParamCommuns.ModeDiffusion.Web)
             {
-                this.ccw.AfficherMessage(type, message);
+                if (this.ccw != null)
+                {
+                    this.ccw.AfficherMessage(type, message);
+                }
+            }
+            if (ParamCommuns.Instance.WebChrono == ParamCommuns.ModeDiffusion.BT)
+            {
+                Chat.BlueToothMgr.Instance.DiffuserMessageBluetooth(type, message);
             }
         }
 
@@ -876,13 +885,27 @@ namespace ChronoJstk
 
         public void DiffusionWeb_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show(string.Format("Diffusion du compte tour sur le web ({0}?", this.diffusionWeb), "Diffusion Web", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (MessageBox.Show(string.Format("Diffusion du compte tour sur le web ({0}?", ParamCommuns.Instance.WebChrono), "Diffusion Web", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
+                ParamCommuns.Instance.WebChrono = ParamCommuns.ModeDiffusion.Web;
                 DiffusionWeb();            
             }
             else
             {
-                this.diffusionWeb = false;
+                ParamCommuns.Instance.WebChrono = ParamCommuns.ModeDiffusion.Non;
+            }
+        }
+
+        public void DiffusionBT_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show(string.Format("Diffusion du compte tour sur le web via Bluetooth ({0}?", ParamCommuns.Instance.WebChrono), "Diffusion Web", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                ParamCommuns.Instance.WebChrono = ParamCommuns.ModeDiffusion.BT;
+                DiffusionWeb();
+            }
+            else
+            {
+                ParamCommuns.Instance.WebChrono = ParamCommuns.ModeDiffusion.Non;
             }
         }
 
@@ -902,14 +925,21 @@ namespace ChronoJstk
             this.lblEtatBackground = new SolidColorBrush(Colors.Yellow);
         }
 
-        public void DiffusionWeb()
+        private void DiffusionWeb()
         {
-            if (ParamCommuns.Instance.WebChrono == false)
+            Thread t = new Thread(DiffusionWebInThread);
+            t.Start();
+        }
+
+
+        public void DiffusionWebInThread()
+        {
+            if (ParamCommuns.Instance.WebChrono !=  ParamCommuns.ModeDiffusion.Web)
             {
                 return;
             }
 
-            this.diffusionWeb = true;
+            //this.diffusionWeb = ParamCommuns.Instance.WebResultat;
             ccw = new Chat.ChronoSignalR();
             this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.NomCompe, string.Format("{0}", ParamCommuns.Instance.NomCompetition));
             if (this.patcs != null)
@@ -1081,20 +1111,24 @@ namespace ChronoJstk
 
         public void OuvrirCompetition(string nomCompe, int noCompt)
         {
-            this.TitreFenetre = nomCompe;
+            
             this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.NomCompe, string.Format("{0}",nomCompe) );
-            this.noCompe = noCompt;
-            this.vagues.Clear();
-            this.series.Clear();
-            this.blocs.Clear();
-            if (this.Pcg != null)
+            this.DispatcherView.Invoke((Action)delegate ()
             {
-                this.Pcg.Select(z => z.Bloc).Distinct().ToList().ForEach(z => this.blocs.Add(z));
-                this.blocSel = this.blocs.First();
-            }
-            this.blocIsEnabled = true;
-            this.serieIsEnabled = true;
-            this.vagueIsEnabled = true;
+                this.TitreFenetre = nomCompe;
+                this.noCompe = noCompt;
+                this.vagues.Clear();
+                this.series.Clear();
+                this.blocs.Clear();
+                if (this.Pcg != null)
+                {
+                    this.Pcg.Select(z => z.Bloc).Distinct().ToList().ForEach(z => this.blocs.Add(z));
+                    this.blocSel = this.blocs.First();
+                }
+                this.blocIsEnabled = true;
+                this.serieIsEnabled = true;
+                this.vagueIsEnabled = true;
+            });
         }
 
         public void Joindre_Click(object sender, RoutedEventArgs e)
@@ -1136,6 +1170,58 @@ namespace ChronoJstk
             if (this.PropertyChanged != null)
             {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(nom));
+            }
+        }
+
+        public void ConfigurerBT()
+        {
+            Chat.BlueToothMgr.Instance.Configurer();
+        }
+
+        public void DiffuserResultat()
+        {
+            Thread t = new Thread(this.DiffuserResultatInThread);
+            t.Start();
+        }
+
+        private void DiffuserResultatInThread()
+        {
+            ResultatCompetitionMgr.Instance.EffacerResultats();
+            string nomCompe = ParamCommuns.Instance.NomCompetition;
+            int noCompt = ParamCommuns.Instance.NoCompetition;
+            this.OuvrirCompetition(nomCompe, noCompt);
+            if (ParamCommuns.Instance.WebChrono != ParamCommuns.ModeDiffusion.Non)
+            {
+                this.DiffusionWebInThread();
+            }
+
+            this.AfficherResultatDefilementInThread();
+            //if (ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.BT || ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.Web)
+            //{
+            //    List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
+            //    if (res != null && res.Count > 0)
+            //    {
+            //        this.mwvm.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
+            //    }
+            //}
+            this.AppelPatineurs();
+        }
+
+        public void AfficherResultatDefilement()
+        {
+            Thread t = new Thread(this.AfficherResultatDefilementInThread);
+            t.Start();
+        }
+
+        private void AfficherResultatDefilementInThread()
+        {
+            if (ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.Web || ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.BT)
+            {
+                List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
+                if (res != null && res.Count > 0)
+                {
+                    this.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
+                }
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using ChronoJstk.Chat;
+using Newtonsoft.Json.Linq;
 using PVModele;
 using PVModele.Tables;
 using ResultatPourWeb;
@@ -92,7 +93,7 @@ namespace ChronoJstk
                 bool m = ParamCommuns.Instance.GroupesMixtes;
                 
                 PatineurCompe.DB = db;
-                PublicationResultat pr = new PublicationResultat(noCompe,m, "json", ftpTravail, ftpSite, ftpUser, ftpPasse) ;
+                PublicationResultat pr = new PublicationResultat(noCompe,m, "json", ftpTravail, ftpSite, ftpUser, ftpPasse, ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.BT, BlueToothMgr.Instance.SendMessageBluetoothVersFTP) ;
                 JObject programme = null;
                 programme = pr.InfoCompeVagues(db);
                 return pr.CopierSiteFTP(programme);                

@@ -190,13 +190,22 @@ namespace ChronoJstk
             o = this.softwareKey.GetValue("WebChrono");
             if (o != null)
             {
-                bool ob = bool.Parse(o.ToString());
-                if (ob)
+                bool ob;
+                if (bool.TryParse(o.ToString(), out ob))
                 {
-                    this.cbxWebChrono.SelectedIndex = 0;
+                    if (ob)
+                    {
+                        this.cbxWebChrono.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        this.cbxWebChrono.SelectedIndex = 1;
+                    }
                 }
-                else {
-                    this.cbxWebChrono.SelectedIndex = 1;
+                else
+                {
+                    int i = (int)o;
+                    this.cbxWebChrono.SelectedIndex = i;
                 }
             }
 
@@ -204,14 +213,22 @@ namespace ChronoJstk
             o = this.softwareKey.GetValue("WebResultat");
             if (o != null)
             {
-                bool ob = bool.Parse(o.ToString());
-                if (!ob)
+                bool ob;
+                if (bool.TryParse(o.ToString(), out ob))
                 {
-                    this.cbxWebResultat.SelectedIndex = 0;
+                    if (!ob)
+                    {
+                        this.cbxWebResultat.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        this.cbxWebResultat.SelectedIndex = 1;
+                    }
                 }
                 else
                 {
-                    this.cbxWebResultat.SelectedIndex = 1;
+                    int i = (int)o;
+                    this.cbxWebResultat.SelectedIndex = i;
                 }
             }
         }
@@ -477,16 +494,33 @@ namespace ChronoJstk
 
         private void cbxWebResultat_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.cbxWebResultat.SelectedIndex == 0)
+            this.softwareKey.SetValue("WebResultat", this.cbxWebResultat.SelectedIndex);
+            switch (this.cbxWebResultat.SelectedIndex)
             {
-                this.softwareKey.SetValue("WebResultat", false);
-                ParamCommuns.Instance.WebResultat = false;
+                case 0:
+                    ParamCommuns.Instance.WebResultat = ParamCommuns.ModeDiffusion.Non;
+                    break;
+                case 1:
+                    ParamCommuns.Instance.WebResultat = ParamCommuns.ModeDiffusion.Web;
+                    break;
+                case 2:
+                    ParamCommuns.Instance.WebResultat = ParamCommuns.ModeDiffusion.BT;
+                    break;
+                default:
+                    ParamCommuns.Instance.WebResultat = ParamCommuns.ModeDiffusion.Non;
+                    break;
+
             }
-            else
-            {
-                this.softwareKey.SetValue("WebResultat", true);
-                ParamCommuns.Instance.WebResultat = true;
-            }
+            //if (this.cbxWebResultat.SelectedIndex == 0)
+            //{
+            //    this.softwareKey.SetValue("WebResultat", false);
+            //    ParamCommuns.Instance.WebResultat = false;
+            //}
+            //else
+            //{
+            //    this.softwareKey.SetValue("WebResultat", true);
+            //    ParamCommuns.Instance.WebResultat = true;
+            //}
         }
 
         private void cbxWebChrono_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -499,13 +533,18 @@ namespace ChronoJstk
                 string x = cbi.Content as string;
                 if (x.ToLower() == "non")
                 {
-                    this.softwareKey.SetValue("WebChrono", false);
-                    ParamCommuns.Instance.WebChrono = false;
+                    this.softwareKey.SetValue("WebChrono", 0);
+                    ParamCommuns.Instance.WebChrono = ParamCommuns.ModeDiffusion.Non;
                 }
-                else
+                else if (x.ToLower() == "oui")
                 {
-                    this.softwareKey.SetValue("WebChrono", true);
-                    ParamCommuns.Instance.WebChrono = true;
+                    this.softwareKey.SetValue("WebChrono", 1);
+                    ParamCommuns.Instance.WebChrono = ParamCommuns.ModeDiffusion.Web;
+                }
+                else 
+                {
+                    this.softwareKey.SetValue("WebChrono", 2);
+                    ParamCommuns.Instance.WebChrono = ParamCommuns.ModeDiffusion.BT;
                 }
             }
             

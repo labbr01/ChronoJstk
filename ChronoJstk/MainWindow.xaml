@@ -22,6 +22,7 @@
             <MenuItem Header="_Options">
                 <MenuItem Header="_Compte tour" Click="CompteTour_Click"></MenuItem>
                 <MenuItem Header="_Web Diffusion" Click="DiffusionWeb_Click"></MenuItem>
+                <MenuItem Header="_BT Diffusion" Click="DiffusionBT_Click"></MenuItem>
                 <MenuItem Header="_Publier resultat" Click="PublierResultat_Click"></MenuItem>
                 <MenuItem Header="_Relire groupe vague" Click="RelireGroupeVague_Click"></MenuItem>
             </MenuItem>

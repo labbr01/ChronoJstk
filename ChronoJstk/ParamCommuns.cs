@@ -39,8 +39,8 @@ namespace ChronoJstk
         public string UrlWeb { get; set; }
         //public string SignalRHub { get; set; }
         public string HostConfig { get; set; }
-        public bool WebChrono { get; set; }
-        public bool WebResultat { get; set; }
+        public ModeDiffusion WebChrono { get; set; }
+        public ModeDiffusion WebResultat { get; set; }
         public string MotPasse { get; set; }
         public int PortInput { get; set;  }
         public int PortConfig { get; set; }
@@ -52,6 +52,13 @@ namespace ChronoJstk
         public ObservableCollection<ProgrammeCourse> Programmes { get; set; }
         public Dictionary<string, List<PatineurVague>> DescVagues { get; set; }
         public EtatEnum Etat { get; set; }
+
+        public enum ModeDiffusion
+        {
+            Non = 0,
+            Web = 1,
+            BT = 2
+        }
 
         public enum EtatEnum
         {

@@ -18,8 +18,10 @@ namespace ResultatPourWeb
         private string ftpUser;
         private string ftpPassword;
         private string ftpSite;
+        private bool bluetooth;
+        private Action<string, string> bluetoothVersFTP;
         // ftp ftpCopie = new ftp("ftp://ftp.mmetara.com", "cpvqadmin", "10cpvq01");
-        public PublicationResultat(int noCompeti, bool mixte, string extFich, string pathTravail, string ftpSite, string ftpUser, string ftpPassword)
+        public PublicationResultat(int noCompeti, bool mixte, string extFich, string pathTravail, string ftpSite, string ftpUser, string ftpPassword, bool bluetooth, Action<string,string> bluetoothVersFTP)
         {
             this.noCompeti = noCompeti;
             this.mixte = mixte;
@@ -32,6 +34,8 @@ namespace ResultatPourWeb
             this.ftpSite = ftpSite;
             this.ftpUser = ftpUser;
             this.ftpPassword = ftpPassword;
+            this.bluetooth = bluetooth;
+            this.bluetoothVersFTP = bluetoothVersFTP;
         }
 
         public JObject InfoCompeVagues(DBPatinVitesse db)
@@ -344,7 +348,11 @@ namespace ResultatPourWeb
             //pwd: 10cpvq01
             List<string> resultat = new List<string>();
 
-            ftp ftpCopie = new ftp(this.ftpSite, this.ftpUser, this.ftpPassword);
+            ftp ftpCopie = null;
+            if (!bluetooth) {
+                ftpCopie = new ftp(this.ftpSite, this.ftpUser, this.ftpPassword);
+            }
+
             string PathResultatsFTP = Path.Combine(this.pathTravail, "ResultatsFTP");
             foreach (string fichier in Directory.GetFiles(PathResultatsFTP))
             {
@@ -361,7 +369,14 @@ namespace ResultatPourWeb
                 }
 
                 //Console.WriteLine("Téléversement du fichier {0} à {1}", fichier, nbcp);
+                if (ftpCopie != null)
+                {
                     ftpCopie.upload(nbcp, fichier);
+                }
+                else
+                {
+                    this.bluetoothVersFTP(nbcp, File.ReadAllText(fichier));
+                }
                 File.Delete(fichier);
             }
             return resultat;

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -98,15 +99,15 @@ namespace ChronoJstk
                 MessageBox.Show("Erreur de rafraichissement");
             }
 
-            if (ParamCommuns.Instance.WebResultat)
-            {
-                List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
-                if (res != null && res.Count > 0)
-                {
-
-                    mwvms.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
-                }
-            }
+            this.mwvms.AfficherResultatDefilement();
+            //if (ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.Web || ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.BT)
+            //{
+            //    List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
+            //    if (res != null && res.Count > 0)
+            //    {
+            //        mwvms.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
+            //    }
+            //}
         }
         private static System.Timers.Timer aTimer;
 

@@ -34,13 +34,25 @@ namespace ChronoJstk
         /// </summary>
         public MainWindow()
         {
-            MainWindowViewModel mwvm = new MainWindowViewModel(this.Dispatcher, this.EnleverTousEnfantSP, this.AjouterEnfantSP);            
+            MainWindowViewModel mwvm = new MainWindowViewModel(this.Dispatcher, this.EnleverTousEnfantSP, this.AjouterEnfantSP);
+            mwvm.DispatcherView = this.Dispatcher;
             this.DataContext = mwvm;
             ProgrammeCourseMgr.Instance.Mwvm = mwvm;
             this.mwvm = mwvm;
-            this.Loaded += MainWindow_Loaded;            
+            this.Loaded += MainWindow_Loaded;
+            
+            this.Closing += MainWindow_Closing;
         }
 
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            if (ParamCommuns.Instance.WebChrono == ParamCommuns.ModeDiffusion.BT)
+            {
+                Chat.BlueToothMgr.Instance.Terminer();
+            }
+        }
+
+        
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             
@@ -50,27 +62,16 @@ namespace ChronoJstk
             {
                 if (cc.OuvertureValidee)
                 {
-                    ResultatCompetitionMgr.Instance.EffacerResultats();
-                    string nomCompe = ParamCommuns.Instance.NomCompetition;
-                    int noCompt = ParamCommuns.Instance.NoCompetition;
-                    this.mwvm.OuvrirCompetition(nomCompe, noCompt );
-                    if (ParamCommuns.Instance.WebChrono)
+                    if (ParamCommuns.Instance.WebChrono == ParamCommuns.ModeDiffusion.BT || ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.BT)
                     {
-                        this.mwvm.DiffusionWeb();
+                        this.mwvm.ConfigurerBT();
                     }
-
-                    if (ParamCommuns.Instance.WebResultat)
-                    {
-                        List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
-                        if (res != null && res.Count > 0)
-                        {
-                            this.mwvm.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
-                        }
-                    }
-                    this.mwvm.AppelPatineurs();
+                    this.mwvm.DiffuserResultat();                    
                 }
             }
         }
+
+      
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
@@ -135,6 +136,11 @@ namespace ChronoJstk
             this.mwvm.DiffusionWeb_Click(sender, e);
         }
 
+        private void DiffusionBT_Click(object sender, RoutedEventArgs e)
+        {
+            this.mwvm.DiffusionBT_Click(sender, e);
+        }
+
         private void Interrompre_Click(object sender, RoutedEventArgs e)
         {
             this.mwvm.Interrompre_Click(sender, e);
@@ -152,13 +158,14 @@ namespace ChronoJstk
 
         private void PublierResultat_Click(object sender, RoutedEventArgs e)
         {
-            if (ParamCommuns.Instance.WebResultat)
+            if (ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.Web || ParamCommuns.Instance.WebResultat == ParamCommuns.ModeDiffusion.BT)
             {
-                List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
-                if (res != null && res.Count > 0)
-                {
-                    this.mwvm.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
-                }
+                this.mwvm.AfficherResultatDefilement();
+                //List<string> res = ResultatCompetitionMgr.Instance.ObtenirResultatCompetition();
+                //if (res != null && res.Count > 0)
+                //{
+                //   this.mwvm.AfficherMessageWeb(Chat.ChronoSignalR.TypeMessage.Defilement1, string.Format("Résultats obtenus pour les groupes : {0}", string.Join(",", res)));
+                //}
             }
         }
 
